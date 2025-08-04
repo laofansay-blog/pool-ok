@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 测试 - 幸运锅屋</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .test-button.error {
+            background: #f44336;
+        }
+        .result {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            border-left: 4px solid #4CAF50;
+        }
+        .error {
+            border-left: 4px solid #f44336;
+        }
+        .info {
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Supabase API 连接测试</h1>
+    
+    <div class="test-section">
+        <h2>📋 配置信息</h2>
+        <div id="configInfo" class="result info">正在加载配置...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔗 连接测试</h2>
+        <button class="test-button" onclick="testConnection()">测试基础连接</button>
+        <button class="test-button" onclick="testTables()">检查数据库表</button>
+        <button class="test-button" onclick="testAuth()">测试认证状态</button>
+        <div id="connectionResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 数据库测试</h2>
+        <button class="test-button" onclick="testRounds()">测试轮次表</button>
+        <button class="test-button" onclick="testSystemConfig()">测试系统配置</button>
+        <button class="test-button" onclick="testUsers()">测试用户表</button>
+        <div id="databaseResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔐 认证测试</h2>
+        <button class="test-button" onclick="testSignUp()">测试注册</button>
+        <button class="test-button" onclick="testSignIn()">测试登录</button>
+        <button class="test-button" onclick="testSignOut()">测试登出</button>
+        <div id="authResult" class="result"></div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script>
+        // 初始化 Supabase 客户端
+        const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
+        
+        // 显示配置信息
+        document.getElementById('configInfo').textContent = `
+Supabase URL: ${CONFIG.SUPABASE_URL}
+Anon Key: ${CONFIG.SUPABASE_ANON_KEY.substring(0, 20)}...
+游戏配置: ${JSON.stringify(CONFIG.GAME, null, 2)}
+        `
+        
+        // 测试基础连接
+        async function testConnection() {
+            const result = document.getElementById('connectionResult')
+            result.textContent = '正在测试连接...'
+            
+            try {
+                // 测试简单的 REST API 调用
+                const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/`, {
+                    headers: {
+                        'apikey': CONFIG.SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`
+                    }
+                })
+                
+                if (response.ok) {
+                    result.textContent = '✅ 基础连接成功！'
+                    result.className = 'result success'
+                } else {
+                    result.textContent = `❌ 连接失败: ${response.status} ${response.statusText}`
+                    result.className = 'result error'
+                }
+            } catch (error) {
+                result.textContent = `❌ 连接错误: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 检查数据库表
+        async function testTables() {
+            const result = document.getElementById('connectionResult')
+            result.textContent = '正在检查数据库表...'
+            
+            try {
+                const tables = ['users', 'rounds', 'bets', 'recharges', 'withdrawals', 'system_config', 'audit_logs']
+                const results = []
+                
+                for (const table of tables) {
+                    try {
+                        const { data, error } = await supabaseClient
+                            .from(table)
+                            .select('*', { count: 'exact', head: true })
+                        
+                        if (error) {
+                            results.push(`❌ ${table}: ${error.message}`)
+                        } else {
+                            results.push(`✅ ${table}: 存在`)
+                        }
+                    } catch (err) {
+                        results.push(`❌ ${table}: ${err.message}`)
+                    }
+                }
+                
+                result.textContent = results.join('\n')
+                result.className = 'result info'
+            } catch (error) {
+                result.textContent = `❌ 检查表失败: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 测试认证状态
+        async function testAuth() {
+            const result = document.getElementById('connectionResult')
+            result.textContent = '正在检查认证状态...'
+            
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser()
+                
+                if (error) {
+                    result.textContent = `❌ 认证检查失败: ${error.message}`
+                    result.className = 'result error'
+                } else if (user) {
+                    result.textContent = `✅ 用户已登录: ${user.email}`
+                    result.className = 'result success'
+                } else {
+                    result.textContent = '⚠️ 用户未登录'
+                    result.className = 'result info'
+                }
+            } catch (error) {
+                result.textContent = `❌ 认证错误: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 测试轮次表
+        async function testRounds() {
+            const result = document.getElementById('databaseResult')
+            result.textContent = '正在测试轮次表...'
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('rounds')
+                    .select('*')
+                    .limit(5)
+                
+                if (error) {
+                    result.textContent = `❌ 轮次表测试失败: ${error.message}`
+                    result.className = 'result error'
+                } else {
+                    result.textContent = `✅ 轮次表测试成功!\n找到 ${data.length} 条记录:\n${JSON.stringify(data, null, 2)}`
+                    result.className = 'result success'
+                }
+            } catch (error) {
+                result.textContent = `❌ 轮次表错误: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 测试系统配置
+        async function testSystemConfig() {
+            const result = document.getElementById('databaseResult')
+            result.textContent = '正在测试系统配置...'
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('system_config')
+                    .select('*')
+                
+                if (error) {
+                    result.textContent = `❌ 系统配置测试失败: ${error.message}`
+                    result.className = 'result error'
+                } else {
+                    result.textContent = `✅ 系统配置测试成功!\n配置项:\n${JSON.stringify(data, null, 2)}`
+                    result.className = 'result success'
+                }
+            } catch (error) {
+                result.textContent = `❌ 系统配置错误: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 测试用户表
+        async function testUsers() {
+            const result = document.getElementById('databaseResult')
+            result.textContent = '正在测试用户表...'
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('id, email, balance, created_at')
+                    .limit(5)
+                
+                if (error) {
+                    result.textContent = `❌ 用户表测试失败: ${error.message}`
+                    result.className = 'result error'
+                } else {
+                    result.textContent = `✅ 用户表测试成功!\n找到 ${data.length} 个用户:\n${JSON.stringify(data, null, 2)}`
+                    result.className = 'result success'
+                }
+            } catch (error) {
+                result.textContent = `❌ 用户表错误: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 测试注册
+        async function testSignUp() {
+            const result = document.getElementById('authResult')
+            result.textContent = '正在测试注册...'
+            
+            const testEmail = `test${Date.now()}@example.com`
+            const testPassword = 'test123456'
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: testEmail,
+                    password: testPassword,
+                    options: {
+                        data: {
+                            username: `testuser${Date.now()}`,
+                            full_name: 'Test User'
+                        }
+                    }
+                })
+                
+                if (error) {
+                    result.textContent = `❌ 注册测试失败: ${error.message}`
+                    result.className = 'result error'
+                } else {
+                    result.textContent = `✅ 注册测试成功!\n用户ID: ${data.user?.id}\n邮箱: ${data.user?.email}`
+                    result.className = 'result success'
+                }
+            } catch (error) {
+                result.textContent = `❌ 注册错误: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 测试登录
+        async function testSignIn() {
+            const result = document.getElementById('authResult')
+            result.textContent = '请先注册一个测试用户'
+            result.className = 'result info'
+        }
+        
+        // 测试登出
+        async function testSignOut() {
+            const result = document.getElementById('authResult')
+            result.textContent = '正在测试登出...'
+            
+            try {
+                const { error } = await supabaseClient.auth.signOut()
+                
+                if (error) {
+                    result.textContent = `❌ 登出测试失败: ${error.message}`
+                    result.className = 'result error'
+                } else {
+                    result.textContent = `✅ 登出测试成功!`
+                    result.className = 'result success'
+                }
+            } catch (error) {
+                result.textContent = `❌ 登出错误: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 页面加载时自动测试连接
+        window.addEventListener('load', () => {
+            setTimeout(testConnection, 1000)
+        })
+    </script>
+</body>
+</html>

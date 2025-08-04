@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下注功能测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-section { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .test-button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .test-button:hover { background: #45a049; }
+        .result { background: white; padding: 15px; border-radius: 4px; margin: 10px 0; white-space: pre-wrap; font-family: monospace; }
+        .success { border-left: 4px solid #4CAF50; }
+        .error { border-left: 4px solid #f44336; }
+        .info { border-left: 4px solid #2196F3; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🎲 下注功能测试</h1>
+    
+    <div class="test-section">
+        <h2>📋 当前用户信息</h2>
+        <div id="userInfo" class="result info">正在加载用户信息...</div>
+        <button class="test-button" onclick="checkUser()">检查用户状态</button>
+        <button class="test-button" onclick="loginTestUser()">登录测试用户</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎯 测试下注数据</h2>
+        <label>测试数据 (JSON格式):</label>
+        <textarea id="testData" rows="10">{
+  "bets": [
+    {"group": 1, "number": 1, "amount": 2},
+    {"group": 1, "number": 2, "amount": 2},
+    {"group": 2, "number": 3, "amount": 2}
+  ],
+  "totalAmount": 6,
+  "userId": "test-user-id"
+}</textarea>
+        <button class="test-button" onclick="testPlaceBet()">测试下注</button>
+        <div id="betResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔧 数据库测试</h2>
+        <button class="test-button" onclick="testDatabase()">检查数据库表</button>
+        <button class="test-button" onclick="testRounds()">检查轮次数据</button>
+        <button class="test-button" onclick="createTestUser()">创建测试用户</button>
+        <div id="dbResult" class="result"></div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script>
+        const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
+        let currentUser = null
+        
+        // 检查用户状态
+        async function checkUser() {
+            const result = document.getElementById('userInfo')
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser()
+                if (error) throw error
+                
+                if (user) {
+                    currentUser = user
+                    result.textContent = `✅ 用户已登录:\nID: ${user.id}\n邮箱: ${user.email}`
+                    result.className = 'result success'
+                    
+                    // 更新测试数据中的用户ID
+                    const testDataEl = document.getElementById('testData')
+                    const testData = JSON.parse(testDataEl.value)
+                    testData.userId = user.id
+                    testDataEl.value = JSON.stringify(testData, null, 2)
+                } else {
+                    result.textContent = '⚠️ 用户未登录'
+                    result.className = 'result info'
+                }
+            } catch (error) {
+                result.textContent = `❌ 检查用户失败: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 登录测试用户
+        async function loginTestUser() {
+            const result = document.getElementById('userInfo')
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: 'test@example.com',
+                    password: 'test123456'
+                })
+                
+                if (error) throw error
+                
+                currentUser = data.user
+                result.textContent = `✅ 登录成功:\nID: ${data.user.id}\n邮箱: ${data.user.email}`
+                result.className = 'result success'
+                
+                // 更新测试数据
+                const testDataEl = document.getElementById('testData')
+                const testData = JSON.parse(testDataEl.value)
+                testData.userId = data.user.id
+                testDataEl.value = JSON.stringify(testData, null, 2)
+                
+            } catch (error) {
+                result.textContent = `❌ 登录失败: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 测试下注
+        async function testPlaceBet() {
+            const result = document.getElementById('betResult')
+            result.textContent = '正在测试下注...'
+            
+            try {
+                const testDataEl = document.getElementById('testData')
+                const testData = JSON.parse(testDataEl.value)
+                
+                console.log('发送的测试数据:', testData)
+                
+                const response = await fetch(`${CONFIG.SUPABASE_URL}/functions/v1/place-bet`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+                        'apikey': CONFIG.SUPABASE_ANON_KEY
+                    },
+                    body: JSON.stringify(testData)
+                })
+                
+                const responseText = await response.text()
+                console.log('响应状态:', response.status)
+                console.log('响应内容:', responseText)
+                
+                if (response.ok) {
+                    result.textContent = `✅ 下注测试成功!\n\n响应:\n${responseText}`
+                    result.className = 'result success'
+                } else {
+                    result.textContent = `❌ 下注测试失败 (${response.status}):\n\n响应:\n${responseText}`
+                    result.className = 'result error'
+                }
+                
+            } catch (error) {
+                result.textContent = `❌ 下注测试错误:\n${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 测试数据库
+        async function testDatabase() {
+            const result = document.getElementById('dbResult')
+            result.textContent = '正在检查数据库...'
+            
+            try {
+                const tables = ['users', 'rounds', 'bets']
+                const results = []
+                
+                for (const table of tables) {
+                    try {
+                        const { data, error } = await supabaseClient
+                            .from(table)
+                            .select('*', { count: 'exact', head: true })
+                        
+                        if (error) {
+                            results.push(`❌ ${table}: ${error.message}`)
+                        } else {
+                            results.push(`✅ ${table}: 存在`)
+                        }
+                    } catch (err) {
+                        results.push(`❌ ${table}: ${err.message}`)
+                    }
+                }
+                
+                result.textContent = results.join('\n')
+                result.className = 'result info'
+            } catch (error) {
+                result.textContent = `❌ 数据库检查失败: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 检查轮次数据
+        async function testRounds() {
+            const result = document.getElementById('dbResult')
+            result.textContent = '正在检查轮次数据...'
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('rounds')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .limit(1)
+                
+                if (error) {
+                    result.textContent = `❌ 轮次查询失败: ${error.message}`
+                    result.className = 'result error'
+                } else if (data.length === 0) {
+                    result.textContent = '⚠️ 没有找到进行中的轮次'
+                    result.className = 'result info'
+                } else {
+                    result.textContent = `✅ 找到进行中的轮次:\n${JSON.stringify(data[0], null, 2)}`
+                    result.className = 'result success'
+                }
+            } catch (error) {
+                result.textContent = `❌ 轮次检查错误: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 创建测试用户
+        async function createTestUser() {
+            const result = document.getElementById('dbResult')
+            result.textContent = '正在创建测试用户...'
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: 'test@example.com',
+                    password: 'test123456',
+                    options: {
+                        data: {
+                            username: 'testuser',
+                            full_name: 'Test User'
+                        }
+                    }
+                })
+                
+                if (error) {
+                    result.textContent = `❌ 创建用户失败: ${error.message}`
+                    result.className = 'result error'
+                } else {
+                    result.textContent = `✅ 测试用户创建成功:\nID: ${data.user?.id}\n邮箱: ${data.user?.email}`
+                    result.className = 'result success'
+                }
+            } catch (error) {
+                result.textContent = `❌ 创建用户错误: ${error.message}`
+                result.className = 'result error'
+            }
+        }
+        
+        // 页面加载时检查用户状态
+        window.addEventListener('load', () => {
+            setTimeout(checkUser, 1000)
+        })
+    </script>
+</body>
+</html>

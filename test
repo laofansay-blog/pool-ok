@@ -1,0 +1,44 @@
+# Supabase Configuration
+SUPABASE_URL=https://deyugfnymgyxcfacxtjy.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRleXVnZm55bWd5eGNmYWN4dGp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQxMzY1OTcsImV4cCI6MjA2OTcxMjU5N30.9-hEjAjJEU3RP-Jbv2MeLv-56MXmXEdZDTNYhfqVX1g
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRleXVnZm55bWd5eGNmYWN4dGp5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDEzNjU5NywiZXhwIjoyMDY5NzEyNTk3fQ.JwjvMBEJMrVWS7TpzGkBtGWgeH_HRTvLXW6mltXVuko
+
+SUPABASE_PROJECT_ID=deyugfnymgyxcfacxtjy
+DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.deyugfnymgyxcfacxtjy.supabase.co:5432/postgres
+
+# Payment Configuration (for future use)
+STRIPE_PUBLIC_KEY=your_stripe_public_key_here
+STRIPE_SECRET_KEY=your_stripe_secret_key_here
+
+# App Configuration
+APP_ENV=development
+APP_PORT=3000
+APP_DOMAIN=localhost:3000
+
+# Security
+CORS_ORIGIN=http://localhost:3000,https://yourdomain.com
+
+# Email Configuration (optional, for custom emails)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+
+# Game Configuration
+LOTTERY_INTERVAL_MINUTES=5
+WINNING_MULTIPLIER=9.8
+MAX_BET_AMOUNT=10000
+MIN_BET_AMOUNT=1
+
+#//pool
+#//X4rqx-i#NUqWyfM
+
+
+
+# EXPO_PUBLIC_SUPABASE_URL=https://deyugfnymgyxcfacxtjy.supabase.co
+# EXPO_PUBLIC_SUPABASE_KEY=<prefer publishable key instead of anon key for mobile and desktop apps>
+#https://deyugfnymgyxcfacxtjy.supabase.co
+
+#anon public eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRleXVnZm55bWd5eGNmYWN4dGp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQxMzY1OTcsImV4cCI6MjA2OTcxMjU5N30.9-hEjAjJEU3RP-Jbv2MeLv-56MXmXEdZDTNYhfqVX1g
+#service_roles:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRleXVnZm55bWd5eGNmYWN4dGp5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDEzNjU5NywiZXhwIjoyMDY5NzEyNTk3fQ.JwjvMBEJMrVWS7TpzGkBtGWgeH_HRTvLXW6mltXVuko
+#postgresql://postgres:[YOUR-PASSWORD]@db.deyugfnymgyxcfacxtjy.supabase.co:5432/postgres

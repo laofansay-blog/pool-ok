@@ -1,0 +1,355 @@
+/* 认证页面专用样式 */
+
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--spacing-md);
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card {
+  background: linear-gradient(135deg, var(--bg-wood) 0%, var(--bg-wood-light) 100%);
+  border: 2px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xxl);
+  box-shadow: var(--shadow-gold);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--primary-gold), var(--bronze), var(--primary-gold));
+  border-radius: var(--radius-lg);
+  z-index: -1;
+  animation: borderGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xxl);
+}
+
+.auth-title .title-main {
+  font-size: 2.2rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.auth-title .title-sub {
+  font-size: 1rem;
+}
+
+.auth-subtitle {
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: var(--spacing-md);
+  font-size: 1.1rem;
+}
+
+/* 认证选项卡 */
+.auth-tabs {
+  display: flex;
+  margin-bottom: var(--spacing-xl);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs);
+}
+
+.auth-tabs .tab-btn {
+  flex: 1;
+  padding: var(--spacing-md);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.auth-tabs .tab-btn.active {
+  background: var(--primary-gold);
+  color: var(--bg-dark);
+  box-shadow: var(--shadow-gold);
+}
+
+.auth-tabs .tab-btn:hover:not(.active) {
+  color: var(--text-light);
+  background: rgba(212, 175, 55, 0.2);
+}
+
+/* 认证表单 */
+.auth-form {
+  display: none;
+}
+
+.auth-form.active {
+  display: block;
+  animation: fadeInUp var(--transition-normal);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-form .form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.auth-form .form-input {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--border-dark);
+  color: var(--text-light);
+  font-size: 1.1rem;
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.auth-form .form-input:focus {
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+.auth-form .form-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* 表单选项 */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-dark);
+  border-radius: var(--radius-sm);
+  background: var(--bg-dark);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-normal);
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  background: var(--primary-gold);
+  border-color: var(--primary-gold);
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--bg-dark);
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.checkbox-text a {
+  color: var(--primary-gold);
+  text-decoration: none;
+  transition: color var(--transition-normal);
+}
+
+.checkbox-text a:hover {
+  color: var(--text-gold);
+  text-decoration: underline;
+}
+
+.forgot-link {
+  color: var(--primary-gold);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color var(--transition-normal);
+}
+
+.forgot-link:hover {
+  color: var(--text-gold);
+  text-decoration: underline;
+}
+
+/* 社交登录 */
+.social-login {
+  margin-top: var(--spacing-xl);
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: var(--spacing-xl) 0;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border-dark);
+}
+
+.divider-text {
+  background: var(--bg-wood);
+  padding: 0 var(--spacing-md);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
+}
+
+.social-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.btn-social {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--border-dark);
+  color: var(--text-light);
+  padding: var(--spacing-md);
+  transition: all var(--transition-normal);
+}
+
+.btn-social:hover {
+  border-color: var(--primary-gold);
+  background: rgba(212, 175, 55, 0.1);
+  box-shadow: var(--shadow-gold);
+}
+
+.social-icon {
+  font-size: 1.2em;
+}
+
+/* 认证页脚 */
+.auth-footer {
+  margin-top: var(--spacing-xl);
+  text-align: center;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-dark);
+}
+
+.footer-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.warning-icon {
+  color: #ff9800;
+  font-size: 1.1em;
+}
+
+/* 模态框内容样式 */
+.modal-description {
+  color: var(--text-light);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.6;
+}
+
+.terms-content,
+.privacy-content {
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.terms-content h4,
+.privacy-content h4 {
+  color: var(--text-gold);
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  font-family: var(--font-title);
+}
+
+.terms-content h4:first-child,
+.privacy-content h4:first-child {
+  margin-top: 0;
+}
+
+.terms-content p,
+.privacy-content p {
+  margin-bottom: var(--spacing-md);
+}
+
+.terms-content ol,
+.terms-content ul,
+.privacy-content ol,
+.privacy-content ul {
+  margin-bottom: var(--spacing-md);
+  padding-left: var(--spacing-lg);
+}
+
+.terms-content li,
+.privacy-content li {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: var(--spacing-xl);
+    margin: var(--spacing-sm);
+  }
+  
+  .auth-title .title-main {
+    font-size: 1.8rem;
+  }
+  
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .social-buttons {
+    flex-direction: column;
+  }
+  
+  .footer-text {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+}

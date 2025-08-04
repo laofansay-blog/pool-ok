@@ -1,0 +1,456 @@
+/* 中世纪风格增强效果 */
+
+/* 数字徽章样式 */
+.number-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--primary-gold) 0%, var(--dark-gold) 100%);
+  color: var(--bg-dark);
+  padding: 2px 8px;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0 2px;
+  border: 1px solid var(--text-gold);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-family: var(--font-title);
+  min-width: 24px;
+  text-align: center;
+}
+
+/* 古老羊皮纸效果 */
+.parchment {
+  background: 
+    linear-gradient(135deg, #f4f1e8 0%, #e8dcc0 100%),
+    radial-gradient(circle at 20% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(160, 82, 45, 0.1) 0%, transparent 50%);
+  border: 2px solid var(--bronze);
+  border-radius: var(--radius-lg);
+  position: relative;
+  color: var(--text-dark);
+}
+
+.parchment::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><filter id="roughPaper"><feTurbulence baseFrequency="0.04" numOctaves="5" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/></filter></defs><rect width="100" height="100" fill="transparent" filter="url(%23roughPaper)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* 装饰性边框 */
+.decorative-border {
+  border: 3px solid transparent;
+  background: 
+    linear-gradient(var(--bg-wood), var(--bg-wood)) padding-box,
+    linear-gradient(45deg, var(--primary-gold), var(--bronze), var(--primary-gold)) border-box;
+  border-radius: var(--radius-lg);
+  position: relative;
+}
+
+.decorative-border::before {
+  content: '⚜️';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-wood);
+  padding: 0 var(--spacing-sm);
+  font-size: 1.2rem;
+  color: var(--primary-gold);
+}
+
+/* 古典按钮效果 */
+.btn-medieval {
+  background: 
+    linear-gradient(135deg, var(--primary-gold) 0%, var(--dark-gold) 50%, var(--bronze) 100%);
+  border: 2px solid var(--text-gold);
+  color: var(--bg-dark);
+  font-family: var(--font-title);
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-medieval::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-medieval:hover::before {
+  left: 100%;
+}
+
+.btn-medieval:hover {
+  background: 
+    linear-gradient(135deg, var(--text-gold) 0%, var(--primary-gold) 50%, var(--dark-gold) 100%);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-medieval:active {
+  transform: translateY(0);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 金币动画效果 */
+.coin-effect {
+  position: relative;
+  display: inline-block;
+}
+
+.coin-effect::after {
+  content: '🪙';
+  position: absolute;
+  top: 50%;
+  right: -30px;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  animation: coinSpin 2s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes coinSpin {
+  0% { transform: translateY(-50%) rotateY(0deg); }
+  50% { transform: translateY(-50%) rotateY(90deg); }
+  100% { transform: translateY(-50%) rotateY(180deg); }
+}
+
+/* 火焰文字效果 */
+.flame-text {
+  background: linear-gradient(45deg, #ff6b35, #f7931e, #ffdc00, #f7931e, #ff6b35);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: flameGlow 3s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+}
+
+@keyframes flameGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* 古老卷轴效果 */
+.scroll-container {
+  background: 
+    linear-gradient(to right, 
+      var(--bg-wood) 0%, 
+      var(--bg-wood-light) 10%, 
+      var(--bg-wood-light) 90%, 
+      var(--bg-wood) 100%
+    );
+  border-radius: 20px;
+  padding: var(--spacing-lg);
+  position: relative;
+  box-shadow: 
+    inset 0 0 20px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-container::before,
+.scroll-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background: 
+    radial-gradient(ellipse at center, var(--bronze) 0%, var(--dark-bronze) 100%);
+  border-radius: 10px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.scroll-container::before {
+  left: -10px;
+}
+
+.scroll-container::after {
+  right: -10px;
+}
+
+/* 魔法光环效果 */
+.magic-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.magic-glow::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: 
+    linear-gradient(45deg, 
+      var(--primary-gold), 
+      var(--text-gold), 
+      var(--primary-gold), 
+      var(--bronze), 
+      var(--primary-gold)
+    );
+  background-size: 400% 400%;
+  border-radius: inherit;
+  z-index: -1;
+  animation: magicGlow 3s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes magicGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* 古典表格样式 */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+.data-table th {
+  background: linear-gradient(135deg, var(--bg-wood) 0%, var(--bg-wood-light) 100%);
+  color: var(--text-gold);
+  font-family: var(--font-title);
+  font-weight: 600;
+  padding: var(--spacing-md);
+  text-align: left;
+  border-bottom: 2px solid var(--border-gold);
+}
+
+.data-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-dark);
+  color: var(--text-light);
+}
+
+.data-table tr:hover {
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.data-table tr.winner {
+  background: rgba(76, 175, 80, 0.2);
+}
+
+.data-table tr.winner td {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+/* 状态指示器 */
+.status {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status.pending {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+  border: 1px solid #ff9800;
+}
+
+.status.settled {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border: 1px solid #4caf50;
+}
+
+.status.cancelled {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border: 1px solid #f44336;
+}
+
+/* 数值显示样式 */
+.positive {
+  color: #4caf50 !important;
+}
+
+.negative {
+  color: #f44336 !important;
+}
+
+/* 加载动画 */
+.loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-muted);
+}
+
+.loading::after {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-dark);
+  border-top: 2px solid var(--primary-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: var(--spacing-sm);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 空状态样式 */
+.empty-message {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.error-message {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: #f44336;
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid #f44336;
+  border-radius: var(--radius-md);
+}
+
+/* 统计卡片样式 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.stat-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  text-align: center;
+  transition: all var(--transition-normal);
+}
+
+.stat-card:hover {
+  border-color: var(--primary-gold);
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-2px);
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-gold);
+  font-family: var(--font-title);
+  margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* 音效控制样式 */
+.audio-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-left: var(--spacing-md);
+}
+
+.audio-toggle {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-gold);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.audio-toggle:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--primary-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+.audio-icon {
+  font-size: 1.2rem;
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+}
+
+#volumeSlider {
+  width: 80px;
+  height: 4px;
+  background: var(--bg-dark);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-gold);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--text-gold);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#volumeSlider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--primary-gold);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--text-gold);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#volumeSlider::-webkit-slider-track {
+  background: linear-gradient(to right, var(--primary-gold) 0%, var(--border-dark) 100%);
+  height: 4px;
+  border-radius: 2px;
+}
+
+#volumeSlider::-moz-range-track {
+  background: linear-gradient(to right, var(--primary-gold) 0%, var(--border-dark) 100%);
+  height: 4px;
+  border-radius: 2px;
+  border: none;
+}

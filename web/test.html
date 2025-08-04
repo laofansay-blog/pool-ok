@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>界面测试 - 幸运锅屋</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/medieval-effects.css">
+    <style>
+        /* 测试页面专用样式 */
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 2px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--bg-wood) 0%, var(--bg-wood-light) 100%);
+        }
+
+        .test-title {
+            color: var(--text-gold);
+            font-family: var(--font-title);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1 style="color: var(--text-gold); text-align: center; font-family: var(--font-title);">
+            幸运锅屋 - 界面测试
+        </h1>
+
+        <!-- 测试顶部信息区 -->
+        <div class="test-section">
+            <h2 class="test-title">顶部信息区测试</h2>
+            <div class="game-info-header">
+                <div class="round-info">
+                    <div class="round-number">
+                        <span class="round-label">期数</span>
+                        <span class="round-value">20241201001</span>
+                    </div>
+                </div>
+                <div class="countdown-info">
+                    <div class="countdown-display">
+                        <span class="countdown-label">本期开奖倒计时</span>
+                        <span class="countdown-timer">04:32</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试数字组 -->
+        <div class="test-section">
+            <h2 class="test-title">数字组测试</h2>
+            <div class="number-groups">
+                <div class="number-group">
+                    <div class="group-header">
+                        <span class="group-name">第一组</span>
+                    </div>
+                    <div class="group-numbers">
+                        <div class="number-circle">1</div>
+                        <div class="number-circle selected">2</div>
+                        <div class="number-circle">3</div>
+                        <div class="number-circle">4</div>
+                        <div class="number-circle selected">5</div>
+                        <div class="number-circle">6</div>
+                        <div class="number-circle">7</div>
+                        <div class="number-circle">8</div>
+                        <div class="number-circle">9</div>
+                        <div class="number-circle">10</div>
+                    </div>
+                </div>
+
+                <div class="number-group">
+                    <div class="group-header">
+                        <span class="group-name">第二组</span>
+                    </div>
+                    <div class="group-numbers">
+                        <div class="number-circle">1</div>
+                        <div class="number-circle">2</div>
+                        <div class="number-circle selected">3</div>
+                        <div class="number-circle">4</div>
+                        <div class="number-circle">5</div>
+                        <div class="number-circle">6</div>
+                        <div class="number-circle selected">7</div>
+                        <div class="number-circle">8</div>
+                        <div class="number-circle">9</div>
+                        <div class="number-circle">10</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试下注区域 -->
+        <div class="test-section">
+            <h2 class="test-title">下注区域测试</h2>
+            <div class="betting-section">
+                <div class="quick-select-actions">
+                    <button class="btn btn-secondary quick-select-btn" data-type="all">全选</button>
+                    <button class="btn btn-secondary quick-select-btn" data-type="big">大数(6-10)</button>
+                    <button class="btn btn-secondary quick-select-btn" data-type="small">小数(1-5)</button>
+                    <button class="btn btn-secondary quick-select-btn" data-type="odd">单数</button>
+                    <button class="btn btn-secondary quick-select-btn" data-type="even">双数</button>
+                    <button class="btn btn-secondary quick-select-btn" data-type="clear">清除</button>
+                </div>
+                <div class="bet-summary">
+                    <div class="bet-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">已选注数:</span>
+                            <span class="stat-value">4</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">单注金额:</span>
+                            <span class="stat-value">
+                                <input type="number" class="bet-input-small" value="2" min="1" max="1000">
+                                <span class="currency">元</span>
+                            </span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">总金额:</span>
+                            <span class="stat-value">8 元</span>
+                        </div>
+                    </div>
+                    <div class="bet-actions">
+                        <button class="btn btn-secondary">清空选择</button>
+                        <button class="btn btn-primary btn-large">
+                            <span class="btn-text">一键下注</span>
+                            <span class="btn-icon">🎲</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试响应式 -->
+        <div class="test-section">
+            <h2 class="test-title">响应式测试说明</h2>
+            <p style="color: var(--text-light); line-height: 1.6;">
+                请调整浏览器窗口大小来测试响应式效果：<br>
+                • 桌面端：数字组显示为 2 列<br>
+                • 平板端：数字组显示为 1 列<br>
+                • 手机端：数字组显示为 1 列，下注区域垂直排列
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 简单的交互测试
+        document.querySelectorAll('.number-circle').forEach(circle => {
+            circle.addEventListener('click', function () {
+                this.classList.toggle('selected')
+                updateTestStats()
+            })
+        })
+
+        function updateTestStats() {
+            const selectedCount = document.querySelectorAll('.number-circle.selected').length
+            const statValue = document.querySelector('.stat-value')
+            if (statValue) {
+                statValue.textContent = selectedCount
+            }
+
+            const totalAmount = selectedCount * 2
+            const totalAmountEl = document.querySelector('.stat-item:last-child .stat-value')
+            if (totalAmountEl) {
+                totalAmountEl.textContent = `${totalAmount} 元`
+            }
+        }
+
+        // 快速选择按钮功能
+        document.querySelectorAll('.quick-select-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const type = this.dataset.type
+                const numbers = document.querySelectorAll('.number-circle')
+
+                switch (type) {
+                    case 'all':
+                        numbers.forEach(num => num.classList.add('selected'))
+                        break
+                    case 'big':
+                        numbers.forEach(num => {
+                            const value = parseInt(num.textContent)
+                            num.classList.toggle('selected', value >= 6)
+                        })
+                        break
+                    case 'small':
+                        numbers.forEach(num => {
+                            const value = parseInt(num.textContent)
+                            num.classList.toggle('selected', value <= 5)
+                        })
+                        break
+                    case 'odd':
+                        numbers.forEach(num => {
+                            const value = parseInt(num.textContent)
+                            num.classList.toggle('selected', value % 2 === 1)
+                        })
+                        break
+                    case 'even':
+                        numbers.forEach(num => {
+                            const value = parseInt(num.textContent)
+                            num.classList.toggle('selected', value % 2 === 0)
+                        })
+                        break
+                    case 'clear':
+                        numbers.forEach(num => num.classList.remove('selected'))
+                        break
+                }
+                updateTestStats()
+            })
+        })
+
+        // 原有测试按钮点击
+        document.querySelectorAll('.btn:not(.quick-select-btn)').forEach(btn => {
+            btn.addEventListener('click', function () {
+                if (this.textContent.includes('清空')) {
+                    document.querySelectorAll('.number-circle.selected').forEach(circle => {
+                        circle.classList.remove('selected')
+                    })
+                    updateTestStats()
+                } else if (this.textContent.includes('下注')) {
+                    alert('测试下注功能 - 实际功能需要登录后使用')
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

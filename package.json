@@ -1,0 +1,61 @@
+{
+  "name": "medieval-casino",
+  "version": "1.0.0",
+  "description": "中世纪风格赌坊游戏 - 基于Supabase的数字预言游戏",
+  "main": "web/index.html",
+  "scripts": {
+    "dev": "cd web && python3 -m http.server 3000",
+    "dev:node": "cd web && npx http-server -p 3000 -c-1",
+    "setup": "chmod +x scripts/setup-supabase.sh && ./scripts/setup-supabase.sh",
+    "config": "node scripts/update-config.js",
+    "test": "node scripts/test-functions.js",
+    "test:performance": "node scripts/performance-monitor.js",
+    "test:stress": "node scripts/test-functions.js --stress",
+    "build": "echo 'Building static files...' && cp -r web dist/",
+    "deploy": "echo 'Deploying to production...'",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:reset": "supabase db reset",
+    "supabase:deploy": "supabase functions deploy",
+    "supabase:logs": "supabase functions logs",
+    "db:init": "psql $DATABASE_URL -f database/init.sql",
+    "db:schema": "psql $DATABASE_URL -f database/schema.sql",
+    "db:functions": "psql $DATABASE_URL -f database/functions.sql",
+    "db:security": "psql $DATABASE_URL -f database/security.sql",
+    "monitor": "node scripts/performance-monitor.js",
+    "health-check": "curl -f $SUPABASE_URL/rest/v1/ || exit 1"
+  },
+  "keywords": [
+    "game",
+    "casino",
+    "medieval",
+    "supabase",
+    "lottery",
+    "gambling",
+    "entertainment"
+  ],
+  "author": "Medieval Casino Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "http-server": "^14.1.1",
+    "dotenv": "^16.3.1"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/medieval-casino.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/medieval-casino/issues"
+  },
+  "homepage": "https://github.com/your-username/medieval-casino#readme",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸运锅屋 - Medieval Casino</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/medieval-effects.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- 背景装饰 -->
+    <div class="background-overlay"></div>
+    <div class="candle-light candle-1"></div>
+    <div class="candle-light candle-2"></div>
+    <div class="candle-light candle-3"></div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">
+                    <span class="title-main">Medieval Casino</span>
+                    <span class="title-sub">幸运锅屋</span>
+                </h1>
+                <div class="user-info">
+                    <div class="balance-display">
+                        <span class="balance-label">金币余额</span>
+                        <span class="balance-amount" id="balance">0.00</span>
+                        <span class="balance-currency">G</span>
+                    </div>
+                    <button class="btn btn-secondary" id="logout">退出</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 游戏区域 -->
+            <section class="game-section">
+                <!-- 顶部信息区 -->
+                <div class="game-info-header">
+                    <div class="round-info">
+                        <div class="round-number">
+                            <span class="round-label">期数</span>
+                            <span class="round-value" id="roundNumber">20241201001</span>
+                        </div>
+                    </div>
+                    <div class="countdown-info">
+                        <div class="countdown-display">
+                            <span class="countdown-label">本期开奖倒计时</span>
+                            <span class="countdown-timer" id="timer">05:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数字选择区域 -->
+                <div class="number-selection">
+                    <h3 class="selection-title">选择你的幸运数字</h3>
+                    <div class="number-groups" id="numberGroups">
+                        <!-- 10组数字将通过 JavaScript 生成 -->
+                    </div>
+                </div>
+
+                <!-- 下注区域 -->
+                <div class="betting-section">
+                    <div class="bet-summary">
+                        <div class="bet-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">已选注数:</span>
+                                <span class="stat-value" id="selectedCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">单注金额:</span>
+                                <span class="stat-value">
+                                    <input type="number" id="singleBetAmount" class="bet-input-small" value="2" min="1"
+                                        max="1000">
+                                    <span class="currency">元</span>
+                                </span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">总金额:</span>
+                                <span class="stat-value" id="totalAmount">0 元</span>
+                            </div>
+                        </div>
+                        <div class="bet-actions">
+                            <button class="btn btn-secondary" id="clearAll">清空选择</button>
+                            <button class="btn btn-primary btn-large" id="placeBet" disabled>
+                                <span class="btn-text">一键下注</span>
+                                <span class="btn-icon">🎲</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <!-- 最新开奖 -->
+                <section class="latest-results">
+                    <h3 class="sidebar-title">最新开奖</h3>
+                    <div class="results-list" id="historyList">
+                        <!-- 历史记录将通过 JavaScript 加载 -->
+                    </div>
+                    <button class="btn btn-text" onclick="showHistoryModal()">查看更多</button>
+                </section>
+
+                <!-- 快捷操作 -->
+                <section class="quick-actions">
+                    <h3 class="sidebar-title">快捷操作</h3>
+                    <div class="action-buttons">
+                        <button class="btn btn-outline" onclick="showRechargeModal()">
+                            <span class="btn-icon">💰</span>
+                            <span class="btn-text">充值</span>
+                        </button>
+                        <button class="btn btn-outline" onclick="showProfileModal()">
+                            <span class="btn-icon">👤</span>
+                            <span class="btn-text">个人中心</span>
+                        </button>
+                        <button class="btn btn-outline" onclick="showRulesModal()">
+                            <span class="btn-icon">📜</span>
+                            <span class="btn-text">游戏规则</span>
+                        </button>
+                    </div>
+                </section>
+            </aside>
+        </main>
+    </div>
+
+    <!-- 模态框 -->
+    <!-- 充值模态框 -->
+    <div class="modal" id="rechargeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">充值金币</h3>
+                <button class="modal-close" onclick="closeModal('rechargeModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="recharge-options">
+                    <div class="amount-presets">
+                        <button class="preset-btn" data-amount="100">100 G</button>
+                        <button class="preset-btn" data-amount="500">500 G</button>
+                        <button class="preset-btn" data-amount="1000">1000 G</button>
+                        <button class="preset-btn" data-amount="5000">5000 G</button>
+                    </div>
+                    <div class="custom-amount">
+                        <input type="number" id="rechargeAmount" placeholder="自定义金额" min="10" max="50000">
+                    </div>
+                    <div class="payment-methods">
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="stripe" checked>
+                            <span class="payment-label">信用卡支付</span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="paypal">
+                            <span class="payment-label">PayPal</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('rechargeModal')">取消</button>
+                <button class="btn btn-primary" onclick="processRecharge()">确认充值</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人中心模态框 -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title">个人中心</h3>
+                <button class="modal-close" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-tabs">
+                    <button class="tab-btn active" data-tab="stats">统计信息</button>
+                    <button class="tab-btn" data-tab="bets">投注记录</button>
+                    <button class="tab-btn" data-tab="transactions">交易记录</button>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="statsTab">
+                        <!-- 统计信息内容 -->
+                    </div>
+                    <div class="tab-pane" id="betsTab">
+                        <!-- 投注记录内容 -->
+                    </div>
+                    <div class="tab-pane" id="transactionsTab">
+                        <!-- 交易记录内容 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 历史记录模态框 -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title">开奖历史</h3>
+                <button class="modal-close" onclick="closeModal('historyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="history-table-container">
+                    <!-- 历史记录表格 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏规则模态框 -->
+    <div class="modal" id="rulesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">游戏规则</h3>
+                <button class="modal-close" onclick="closeModal('rulesModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="rules-content">
+                    <h4>如何游戏</h4>
+                    <ol>
+                        <li>从1-10中选择9个数字</li>
+                        <li>设置下注金额</li>
+                        <li>等待每5分钟一次的开奖</li>
+                        <li>如果你选择的9个数字全部出现在开奖的10个数字中，即为中奖</li>
+                    </ol>
+                    <h4>赔率说明</h4>
+                    <p>中奖赔率为 <strong>9.8倍</strong>，即下注100金币，中奖可获得980金币。</p>
+                    <h4>注意事项</h4>
+                    <ul>
+                        <li>每轮只能下注一次</li>
+                        <li>下注后不可撤销</li>
+                        <li>请理性游戏，适度娱乐</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 消息提示 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 脚本 -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/modals.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

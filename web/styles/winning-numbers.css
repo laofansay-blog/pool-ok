@@ -1,0 +1,276 @@
+/* 开奖数字彩色显示组件样式 */
+
+.winning-numbers-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.winning-number-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: default;
+}
+
+.winning-number-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.number-value {
+    font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+    line-height: 1;
+}
+
+.position-label {
+    font-size: 0.7em;
+    opacity: 0.8;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+/* 小尺寸 - 用于历史记录列表 */
+.winning-numbers-small .winning-number-item {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+.winning-numbers-small .position-label {
+    display: none;
+}
+
+/* 中等尺寸 - 默认尺寸 */
+.winning-numbers-medium .winning-number-item {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+}
+
+.winning-numbers-medium .position-label {
+    font-size: 10px;
+}
+
+/* 大尺寸 - 用于详细展示 */
+.winning-numbers-large .winning-number-item {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    border-radius: 8px;
+}
+
+.winning-numbers-large .position-label {
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+/* 紧凑模式 */
+.winning-numbers-container.compact {
+    gap: 2px;
+}
+
+.winning-numbers-container.compact .winning-number-item {
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 详细模式 */
+.winning-numbers-container.detailed {
+    gap: 8px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.winning-numbers-container.detailed .winning-number-item {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .winning-numbers-large .winning-number-item {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .winning-numbers-medium .winning-number-item {
+        width: 28px;
+        height: 28px;
+        font-size: 13px;
+    }
+    
+    .winning-numbers-container.detailed {
+        gap: 6px;
+        padding: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .winning-numbers-large .winning-number-item {
+        width: 36px;
+        height: 36px;
+        font-size: 15px;
+    }
+    
+    .winning-numbers-medium .winning-number-item {
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
+    }
+    
+    .winning-numbers-small .winning-number-item {
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
+    }
+    
+    .winning-numbers-container {
+        gap: 3px;
+    }
+    
+    .winning-numbers-container.detailed {
+        gap: 4px;
+        padding: 4px;
+    }
+}
+
+/* 动画效果 */
+@keyframes numberReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotateY(180deg);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1) rotateY(90deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateY(0deg);
+    }
+}
+
+.winning-number-item.animate {
+    animation: numberReveal 0.6s ease-out forwards;
+}
+
+.winning-number-item.animate:nth-child(1) { animation-delay: 0.1s; }
+.winning-number-item.animate:nth-child(2) { animation-delay: 0.2s; }
+.winning-number-item.animate:nth-child(3) { animation-delay: 0.3s; }
+.winning-number-item.animate:nth-child(4) { animation-delay: 0.4s; }
+.winning-number-item.animate:nth-child(5) { animation-delay: 0.5s; }
+.winning-number-item.animate:nth-child(6) { animation-delay: 0.6s; }
+.winning-number-item.animate:nth-child(7) { animation-delay: 0.7s; }
+.winning-number-item.animate:nth-child(8) { animation-delay: 0.8s; }
+.winning-number-item.animate:nth-child(9) { animation-delay: 0.9s; }
+.winning-number-item.animate:nth-child(10) { animation-delay: 1.0s; }
+
+/* 兼容现有样式 */
+.number-badge {
+    transition: all 0.3s ease;
+}
+
+.number-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* 历史记录中的开奖数字 */
+.history-item .winning-numbers {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.history-item .winning-numbers .number-badge {
+    min-width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 模态框中的开奖数字 */
+.modal .winning-numbers .number-badge {
+    min-width: 28px;
+    height: 28px;
+    font-size: 13px;
+    border-radius: 5px;
+}
+
+/* 投注记录中的数字显示 */
+.bet-numbers-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    align-items: center;
+}
+
+.bet-number-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 20px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.bet-number-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.bet-number-badge.small {
+    min-width: 28px;
+    height: 18px;
+    font-size: 10px;
+    padding: 1px 4px;
+}
+
+.bet-number-badge.medium {
+    min-width: 32px;
+    height: 20px;
+    font-size: 11px;
+    padding: 2px 6px;
+}
+
+.bet-number-badge.large {
+    min-width: 36px;
+    height: 24px;
+    font-size: 12px;
+    padding: 3px 8px;
+}
+
+.no-bets {
+    color: #999;
+    font-style: italic;
+    font-size: 12px;
+}
+
+.error {
+    color: #ff4444;
+    font-size: 12px;
+    font-weight: bold;
+}

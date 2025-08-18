@@ -32,7 +32,7 @@ serve(async (req) => {
 
     // 验证请求方法
     if (req.method !== 'POST') {
-      throw new Error('只支持 POST 请求')
+      throw new Error('只支持 POST 请求 - 来自最新版本的函数')
     }
 
     // 解析请求体
@@ -40,9 +40,11 @@ serve(async (req) => {
     console.log('收到的请求数据:', JSON.stringify(requestBody, null, 2))
 
     const { bets, totalAmount, userId }: BetRequest = requestBody
+    console.log('解析后的数据:', { bets, totalAmount, userId })
 
     // 验证输入参数
     if (!bets || !Array.isArray(bets) || bets.length === 0) {
+      console.log('投注验证失败: bets =', bets)
       throw new Error('下注信息不能为空')
     }
 
@@ -111,20 +113,44 @@ serve(async (req) => {
     // 计算潜在赔付
     const winningMultiplier = 9.8
 
-    // 为每个下注项创建记录
-    const betRecords = bets.map(bet => ({
+    // 将投注数据按组分类
+    const groupedBets: { [key: string]: number[] } = {}
+    const originalBets: Array<{ group: number, number: number, amount: number }> = []
+
+    // 初始化所有组（1-10）
+    for (let i = 1; i <= 10; i++) {
+      groupedBets[i.toString()] = []
+    }
+
+    // 按组分类投注数据
+    for (const bet of bets) {
+      groupedBets[bet.group.toString()].push(bet.number)
+      originalBets.push({
+        group: bet.group,
+        number: bet.number,
+        amount: bet.amount
+      })
+    }
+
+    // 创建单个投注记录（新的JSONB格式）
+    const betRecord = {
       user_id: userId,
       round_id: currentRound.id,
-      selected_numbers: [bet.number], // 单个数字作为数组
-      bet_amount: bet.amount,
-      potential_payout: bet.amount * winningMultiplier,
-      status: 'pending'
-    }))
+      selected_numbers: groupedBets,
+      bet_amount: totalAmount,
+      potential_payout: totalAmount * winningMultiplier,
+      status: 'pending',
+      metadata: {
+        original_bets: originalBets,
+        bet_count: bets.length,
+        groups_used: Object.keys(groupedBets).filter(key => groupedBets[key].length > 0)
+      }
+    }
 
-    // 批量创建投注记录
+    // 创建投注记录
     const { data: betResults, error: betError } = await supabaseClient
       .from('bets')
-      .insert(betRecords)
+      .insert([betRecord])
       .select()
 
     if (betError) {
@@ -148,7 +174,7 @@ serve(async (req) => {
     await supabaseClient
       .from('rounds')
       .update({
-        total_bets_count: currentRound.total_bets_count + bets.length,
+        total_bets_count: currentRound.total_bets_count + 1, // 现在是一个投注记录
         total_bet_amount: currentRound.total_bet_amount + totalAmount
       })
       .eq('id', currentRound.id)
@@ -158,11 +184,13 @@ serve(async (req) => {
         success: true,
         message: `下注成功！共 ${bets.length} 注，总金额 ${totalAmount} 元`,
         data: {
-          betIds: betResults.map(b => b.id),
+          betId: betResults[0].id,
           roundNumber: currentRound.round_number,
           bets: bets,
           totalAmount: totalAmount,
-          totalPotentialPayout: bets.reduce((sum, bet) => sum + bet.amount * winningMultiplier, 0)
+          totalPotentialPayout: totalAmount * winningMultiplier,
+          groupedBets: groupedBets,
+          metadata: betRecord.metadata
         }
       }),
       {

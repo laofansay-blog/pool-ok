@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开奖数字组件演示</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/winning-numbers.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-title {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .demo-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        
+        .demo-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .demo-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .demo-result {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .color-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .color-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .color-sample {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .color-info {
+            color: white;
+            font-size: 14px;
+        }
+        
+        .animate-btn {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        
+        .animate-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">🎲 开奖数字彩色显示组件演示</h1>
+        
+        <!-- 颜色说明 -->
+        <div class="demo-section">
+            <h2 class="demo-subtitle">🎨 颜色对照表</h2>
+            <div class="color-legend" id="colorLegend">
+                <!-- 颜色对照将通过JavaScript生成 -->
+            </div>
+        </div>
+        
+        <!-- 不同尺寸演示 -->
+        <div class="demo-section">
+            <h2 class="demo-subtitle">📏 不同尺寸演示</h2>
+            
+            <div class="demo-item">
+                <div class="demo-label">小尺寸 (用于历史记录列表)</div>
+                <div class="demo-result" id="smallDemo"></div>
+            </div>
+            
+            <div class="demo-item">
+                <div class="demo-label">中等尺寸 (默认)</div>
+                <div class="demo-result" id="mediumDemo"></div>
+            </div>
+            
+            <div class="demo-item">
+                <div class="demo-label">大尺寸 (详细展示)</div>
+                <div class="demo-result" id="largeDemo"></div>
+            </div>
+        </div>
+        
+        <!-- 不同样式演示 -->
+        <div class="demo-section">
+            <h2 class="demo-subtitle">🎭 不同样式演示</h2>
+            
+            <div class="demo-item">
+                <div class="demo-label">紧凑模式</div>
+                <div class="demo-result" id="compactDemo"></div>
+            </div>
+            
+            <div class="demo-item">
+                <div class="demo-label">详细模式 (带位置标识)</div>
+                <div class="demo-result" id="detailedDemo"></div>
+            </div>
+        </div>
+        
+        <!-- 动画演示 -->
+        <div class="demo-section">
+            <h2 class="demo-subtitle">✨ 动画效果演示</h2>
+            <div class="demo-item">
+                <div class="demo-label">开奖动画效果</div>
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <button class="animate-btn" onclick="playAnimation()">播放开奖动画</button>
+                    <button class="animate-btn" onclick="generateNewNumbers()">生成新数字</button>
+                </div>
+                <div class="demo-result" id="animationDemo"></div>
+            </div>
+        </div>
+        
+        <!-- 实际使用示例 -->
+        <div class="demo-section">
+            <h2 class="demo-subtitle">💡 实际使用示例</h2>
+            
+            <div class="demo-item">
+                <div class="demo-label">历史记录中的显示效果</div>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
+                    <div class="history-item" style="display: flex; align-items: center; gap: 15px; color: white;">
+                        <span class="round-number">第138期</span>
+                        <span class="winning-numbers" id="historyExample"></span>
+                        <span class="round-time">2024-12-01 14:35</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/winning-numbers.js"></script>
+    <script>
+        // 示例开奖数字
+        const sampleNumbers = [3, 7, 1, 9, 5, 2, 8, 4, 6, 10];
+        let currentNumbers = [...sampleNumbers];
+        
+        // 初始化演示
+        function initDemo() {
+            // 生成颜色对照表
+            generateColorLegend();
+            
+            // 生成不同尺寸的演示
+            document.getElementById('smallDemo').innerHTML = WinningNumbers.render(currentNumbers, { size: 'small' });
+            document.getElementById('mediumDemo').innerHTML = WinningNumbers.render(currentNumbers, { size: 'medium' });
+            document.getElementById('largeDemo').innerHTML = WinningNumbers.render(currentNumbers, { size: 'large' });
+            
+            // 生成不同样式的演示
+            document.getElementById('compactDemo').innerHTML = WinningNumbers.renderCompact(currentNumbers);
+            document.getElementById('detailedDemo').innerHTML = WinningNumbers.renderDetailed(currentNumbers);
+            
+            // 动画演示
+            document.getElementById('animationDemo').innerHTML = WinningNumbers.render(currentNumbers, { size: 'large' });
+            
+            // 历史记录示例
+            document.getElementById('historyExample').innerHTML = WinningNumbers.renderCompact(currentNumbers);
+        }
+        
+        // 生成颜色对照表
+        function generateColorLegend() {
+            const legendContainer = document.getElementById('colorLegend');
+            const colors = WinningNumbers.colors;
+            const textColors = WinningNumbers.textColors;
+            
+            legendContainer.innerHTML = colors.map((color, index) => `
+                <div class="color-item">
+                    <div class="color-sample" style="background-color: ${color}; color: ${textColors[index]};">
+                        ${index + 1}
+                    </div>
+                    <div class="color-info">
+                        第${index + 1}位 - ${color}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 播放动画
+        function playAnimation() {
+            const container = document.getElementById('animationDemo');
+            container.innerHTML = WinningNumbers.render(currentNumbers, { size: 'large' });
+            
+            // 添加动画类
+            const items = container.querySelectorAll('.winning-number-item');
+            items.forEach(item => {
+                item.classList.add('animate');
+            });
+            
+            // 动画结束后移除类
+            setTimeout(() => {
+                items.forEach(item => {
+                    item.classList.remove('animate');
+                });
+            }, 2000);
+        }
+        
+        // 生成新的随机数字
+        function generateNewNumbers() {
+            currentNumbers = Array.from({ length: 10 }, () => Math.floor(Math.random() * 10) + 1);
+            initDemo();
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initDemo);
+    </script>
+</body>
+</html>

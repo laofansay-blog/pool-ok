@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投注记录显示测试</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/winning-numbers.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-title {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .test-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        
+        .test-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .test-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .test-result {
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .data-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🎯 投注记录显示测试</h1>
+        
+        <!-- 新格式JSONB测试 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">📊 新格式 (JSONB) 投注记录</h2>
+            
+            <div class="test-item">
+                <div class="test-label">多组投注示例</div>
+                <div class="test-result" id="jsonbExample1"></div>
+            </div>
+            
+            <div class="test-item">
+                <div class="test-label">单组投注示例</div>
+                <div class="test-result" id="jsonbExample2"></div>
+            </div>
+            
+            <div class="test-item">
+                <div class="test-label">文字描述格式</div>
+                <div class="test-result" id="textExample1"></div>
+            </div>
+        </div>
+        
+        <!-- 旧格式数组测试 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">📋 旧格式 (数组) 投注记录</h2>
+            
+            <div class="test-item">
+                <div class="test-label">数组格式示例</div>
+                <div class="test-result" id="arrayExample1"></div>
+            </div>
+            
+            <div class="test-item">
+                <div class="test-label">文字描述格式</div>
+                <div class="test-result" id="textExample2"></div>
+            </div>
+        </div>
+        
+        <!-- 投注记录表格测试 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">📝 投注记录表格展示</h2>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>轮次</th>
+                        <th>选择数字</th>
+                        <th>投注金额</th>
+                        <th>状态</th>
+                        <th>收益</th>
+                    </tr>
+                </thead>
+                <tbody id="betTableBody">
+                    <!-- 表格内容将通过JavaScript生成 -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 错误处理测试 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">⚠️ 错误处理测试</h2>
+            
+            <div class="test-item">
+                <div class="test-label">空数据</div>
+                <div class="test-result" id="errorExample1"></div>
+            </div>
+            
+            <div class="test-item">
+                <div class="test-label">无效格式</div>
+                <div class="test-result" id="errorExample2"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/winning-numbers.js"></script>
+    <script>
+        // 测试数据
+        const testData = {
+            // 新格式JSONB数据
+            jsonbMultiple: {
+                "1": [1, 2],
+                "2": [3],
+                "3": [],
+                "4": [],
+                "5": [7, 8],
+                "6": [],
+                "7": [],
+                "8": [],
+                "9": [],
+                "10": [9]
+            },
+            
+            jsonbSingle: {
+                "1": [5],
+                "2": [],
+                "3": [],
+                "4": [],
+                "5": [],
+                "6": [],
+                "7": [],
+                "8": [],
+                "9": [],
+                "10": []
+            },
+            
+            // 旧格式数组数据
+            arrayFormat: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            
+            // 模拟投注记录
+            betRecords: [
+                {
+                    round_number: 138,
+                    selected_numbers: {
+                        "1": [1, 2],
+                        "2": [3],
+                        "3": [],
+                        "4": [],
+                        "5": [],
+                        "6": [],
+                        "7": [],
+                        "8": [],
+                        "9": [],
+                        "10": []
+                    },
+                    bet_amount: 6.00,
+                    status: 'pending',
+                    actual_payout: 0
+                },
+                {
+                    round_number: 137,
+                    selected_numbers: {
+                        "1": [5],
+                        "2": [],
+                        "3": [7],
+                        "4": [],
+                        "5": [],
+                        "6": [],
+                        "7": [],
+                        "8": [],
+                        "9": [],
+                        "10": [2]
+                    },
+                    bet_amount: 9.00,
+                    status: 'settled',
+                    actual_payout: 29.40
+                },
+                {
+                    round_number: 136,
+                    selected_numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9], // 旧格式
+                    bet_amount: 27.00,
+                    status: 'settled',
+                    actual_payout: 0
+                }
+            ]
+        }
+        
+        // 初始化测试
+        function initTests() {
+            // 新格式JSONB测试
+            document.getElementById('jsonbExample1').innerHTML = 
+                WinningNumbers.renderBetNumbers(testData.jsonbMultiple)
+            
+            document.getElementById('jsonbExample2').innerHTML = 
+                WinningNumbers.renderBetNumbers(testData.jsonbSingle)
+            
+            document.getElementById('textExample1').innerHTML = 
+                WinningNumbers.formatBetNumbersText(testData.jsonbMultiple)
+            
+            // 旧格式数组测试
+            document.getElementById('arrayExample1').innerHTML = 
+                WinningNumbers.renderBetNumbers(testData.arrayFormat)
+            
+            document.getElementById('textExample2').innerHTML = 
+                WinningNumbers.formatBetNumbersText(testData.arrayFormat)
+            
+            // 投注记录表格
+            const tableBody = document.getElementById('betTableBody')
+            tableBody.innerHTML = testData.betRecords.map(bet => `
+                <tr>
+                    <td>第${bet.round_number}期</td>
+                    <td>${WinningNumbers.renderBetNumbers(bet.selected_numbers)}</td>
+                    <td>¥${bet.bet_amount.toFixed(2)}</td>
+                    <td>
+                        <span class="status ${bet.status}">
+                            ${bet.status === 'settled' ? (bet.actual_payout > 0 ? '中奖' : '未中奖') : '待开奖'}
+                        </span>
+                    </td>
+                    <td>¥${bet.actual_payout.toFixed(2)}</td>
+                </tr>
+            `).join('')
+            
+            // 错误处理测试
+            document.getElementById('errorExample1').innerHTML = 
+                WinningNumbers.renderBetNumbers({})
+            
+            document.getElementById('errorExample2').innerHTML = 
+                WinningNumbers.renderBetNumbers("invalid data")
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initTests)
+    </script>
+</body>
+</html>

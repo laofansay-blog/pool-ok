@@ -16,14 +16,58 @@ function generateWinningNumbers(): number[] {
   return numbers
 }
 
-// 检查投注是否中奖
-function checkBetWinner(selectedNumbers: number[], winningNumbers: number[]): boolean {
-  return selectedNumbers.every(num => winningNumbers.includes(num))
+// 检查投注是否中奖（新的JSONB格式）
+function checkBetWinner(selectedNumbers: any, winningNumbers: number[]): boolean {
+  // 如果是旧格式（数组），使用旧逻辑
+  if (Array.isArray(selectedNumbers)) {
+    return selectedNumbers.every(num => winningNumbers.includes(num))
+  }
+
+  // 新格式（JSONB对象）
+  // 检查每个组中选择的数字是否与对应位置的开奖数字匹配
+  for (let group = 1; group <= 10; group++) {
+    const groupKey = group.toString()
+    const groupNumbers = selectedNumbers[groupKey] || []
+
+    if (groupNumbers.length > 0) {
+      // 检查该组的开奖数字是否在用户选择的数字中
+      const winningNumber = winningNumbers[group - 1] // 开奖数字数组索引从0开始
+      if (!groupNumbers.includes(winningNumber)) {
+        return false // 如果任何一组没有匹配，则不中奖
+      }
+    }
+  }
+
+  return true // 所有有投注的组都匹配
 }
 
-// 获取匹配的数字
-function getMatchedNumbers(selectedNumbers: number[], winningNumbers: number[]): number[] {
-  return selectedNumbers.filter(num => winningNumbers.includes(num))
+// 获取匹配的数字（新的JSONB格式）
+function getMatchedNumbers(selectedNumbers: any, winningNumbers: number[]): any {
+  // 如果是旧格式（数组），使用旧逻辑
+  if (Array.isArray(selectedNumbers)) {
+    return selectedNumbers.filter(num => winningNumbers.includes(num))
+  }
+
+  // 新格式（JSONB对象）
+  const matchedGroups: { [key: string]: number[] } = {}
+
+  for (let group = 1; group <= 10; group++) {
+    const groupKey = group.toString()
+    const groupNumbers = selectedNumbers[groupKey] || []
+
+    if (groupNumbers.length > 0) {
+      const winningNumber = winningNumbers[group - 1]
+      if (groupNumbers.includes(winningNumber)) {
+        matchedGroups[groupKey] = [winningNumber]
+      } else {
+        matchedGroups[groupKey] = []
+      }
+    } else {
+      matchedGroups[groupKey] = []
+    }
+  }
+
+  return matchedGroups
 }
 
 serve(async (req) => {
@@ -166,7 +210,7 @@ serve(async (req) => {
 
       } catch (error) {
         console.error(`处理轮次 ${round.round_number} 失败:`, error)
-        
+
         // 回滚轮次状态
         await supabaseClient
           .from('rounds')
@@ -192,7 +236,7 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('开奖失败:', error)
-    
+
     return new Response(
       JSON.stringify({
         success: false,

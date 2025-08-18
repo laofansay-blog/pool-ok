@@ -43,13 +43,14 @@ CREATE TABLE IF NOT EXISTS public.bets (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     user_id UUID REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
     round_id UUID REFERENCES public.rounds(id) ON DELETE CASCADE NOT NULL,
-    selected_numbers INTEGER[] NOT NULL CHECK (array_length(selected_numbers, 1) = 9),
+    selected_numbers JSONB NOT NULL DEFAULT '{}',  -- 改为JSONB格式存储分组投注
     bet_amount DECIMAL(15,2) NOT NULL CHECK (bet_amount > 0),
     potential_payout DECIMAL(15,2) NOT NULL,
     actual_payout DECIMAL(15,2) DEFAULT 0.00 NOT NULL,
     is_winner BOOLEAN DEFAULT false NOT NULL,
     matched_numbers INTEGER[] DEFAULT '{}',
     status TEXT DEFAULT 'pending' NOT NULL CHECK (status IN ('pending', 'settled', 'cancelled')),
+    metadata JSONB DEFAULT '{}',  -- 保留元数据字段存储其他信息
     placed_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     settled_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,

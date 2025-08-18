@@ -85,7 +85,7 @@ function initializeNumberGrid() {
         const groupHeader = document.createElement('div')
         groupHeader.className = 'group-header'
         groupHeader.innerHTML = `
-            <span class="group-name">第${getChineseNumber(group)}组</span>
+            <span class="group-name">${getChineseNumber(group)}</span>
             <div class="quick-select">
                 <button class="quick-btn" data-action="all" data-group="${group}">全</button>
                 <button class="quick-btn" data-action="big" data-group="${group}">大</button>
@@ -279,8 +279,8 @@ function handleQuickSelect(action, group) {
 
 // 获取中文数字
 function getChineseNumber(num) {
-    const chinese = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十']
-    return chinese[num] || num.toString()
+    const chinese = ['--', '冠军', '亚军', '季军', '第四组', '五组', '第六组', '第七组', '第八组', '第九组', '第十组']
+    return chinese[num]
 }
 
 // 切换数字选择
@@ -556,9 +556,7 @@ async function loadHistory() {
             `<div class="history-item">
                 <span class="round-number">第${round.round_number}期</span>
                 <span class="winning-numbers">
-                    ${round.winning_numbers.map(num =>
-                `<span class="number-badge">${num}</span>`
-            ).join('')}
+                    ${WinningNumbers.renderCompact(round.winning_numbers)}
                 </span>
                 <span class="round-time">${formatTime(round.draw_time)}</span>
             </div>`

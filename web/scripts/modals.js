@@ -4,7 +4,7 @@
 const ModalManager = {
     // 当前打开的模态框
     currentModal: null,
-    
+
     // 打开模态框
     open(modalId) {
         const modal = document.getElementById(modalId)
@@ -12,68 +12,68 @@ const ModalManager = {
             console.error(`模态框 ${modalId} 不存在`)
             return
         }
-        
+
         // 关闭当前模态框
         if (this.currentModal) {
             this.close(this.currentModal.id)
         }
-        
+
         // 显示模态框
         modal.classList.add('active')
         this.currentModal = modal
-        
+
         // 禁用背景滚动
         document.body.style.overflow = 'hidden'
-        
+
         // 添加键盘事件监听
         document.addEventListener('keydown', this.handleKeydown.bind(this))
-        
+
         // 添加点击背景关闭功能
         modal.addEventListener('click', this.handleBackdropClick.bind(this))
-        
+
         // 触发打开事件
         this.triggerEvent(modal, 'modal:open')
     },
-    
+
     // 关闭模态框
     close(modalId) {
-        const modal = typeof modalId === 'string' ? 
+        const modal = typeof modalId === 'string' ?
             document.getElementById(modalId) : modalId
-            
+
         if (!modal) return
-        
+
         // 隐藏模态框
         modal.classList.remove('active')
-        
+
         // 如果是当前模态框，清除引用
         if (this.currentModal === modal) {
             this.currentModal = null
-            
+
             // 恢复背景滚动
             document.body.style.overflow = ''
-            
+
             // 移除事件监听
             document.removeEventListener('keydown', this.handleKeydown.bind(this))
         }
-        
+
         // 触发关闭事件
         this.triggerEvent(modal, 'modal:close')
     },
-    
+
     // 处理键盘事件
     handleKeydown(event) {
         if (event.key === 'Escape' && this.currentModal) {
             this.close(this.currentModal.id)
         }
     },
-    
+
     // 处理背景点击
     handleBackdropClick(event) {
         if (event.target === event.currentTarget) {
             this.close(event.currentTarget.id)
         }
     },
-    
+
     // 触发自定义事件
     triggerEvent(modal, eventName) {
         const event = new CustomEvent(eventName, {
@@ -129,18 +129,18 @@ function initRechargeModal() {
     // 预设金额按钮事件
     const presetBtns = document.querySelectorAll('.preset-btn')
     const amountInput = document.getElementById('rechargeAmount')
-    
+
     presetBtns.forEach(btn => {
         btn.onclick = () => {
             const amount = btn.dataset.amount
             amountInput.value = amount
-            
+
             // 更新按钮状态
             presetBtns.forEach(b => b.classList.remove('active'))
             btn.classList.add('active')
         }
     })
-    
+
     // 自定义金额输入事件
     if (amountInput) {
         amountInput.oninput = () => {
@@ -154,20 +154,20 @@ function initProfileModal() {
     // 选项卡切换
     const tabBtns = document.querySelectorAll('.profile-tabs .tab-btn')
     const tabPanes = document.querySelectorAll('.tab-pane')
-    
+
     tabBtns.forEach(btn => {
         btn.onclick = () => {
             const tabId = btn.dataset.tab
-            
+
             // 更新按钮状态
             tabBtns.forEach(b => b.classList.remove('active'))
             btn.classList.add('active')
-            
+
             // 更新内容显示
             tabPanes.forEach(pane => {
                 pane.classList.remove('active')
             })
-            
+
             const targetPane = document.getElementById(tabId + 'Tab')
             if (targetPane) {
                 targetPane.classList.add('active')
@@ -175,7 +175,7 @@ function initProfileModal() {
             }
         }
     })
-    
+
     // 加载默认选项卡内容
     loadTabContent('stats')
 }
@@ -189,7 +189,7 @@ function initHistoryModal() {
 async function loadTabContent(tabId) {
     const tabPane = document.getElementById(tabId + 'Tab')
     if (!tabPane) return
-    
+
     try {
         switch (tabId) {
             case 'stats':
@@ -211,16 +211,16 @@ async function loadTabContent(tabId) {
 // 加载用户统计
 async function loadUserStats(container) {
     if (!currentUser) return
-    
+
     container.innerHTML = '<div class="loading">加载中...</div>'
-    
+
     try {
         const { data, error } = await supabaseClient.functions.invoke('get-history', {
             body: { type: 'user_stats', userId: currentUser.id }
         })
-        
+
         if (error) throw error
-        
+
         const stats = data.data
         container.innerHTML = `
             <div class="stats-grid">
@@ -268,22 +268,22 @@ async function loadUserStats(container) {
 // 加载用户投注记录
 async function loadUserBets(container) {
     if (!currentUser) return
-    
+
     container.innerHTML = '<div class="loading">加载中...</div>'
-    
+
     try {
         const { data, error } = await supabaseClient.functions.invoke('get-history', {
             body: { type: 'bets', userId: currentUser.id, limit: 20 }
         })
-        
+
         if (error) throw error
-        
+
         const bets = data.data
         if (!bets || bets.length === 0) {
             container.innerHTML = '<p class="empty-message">暂无投注记录</p>'
             return
         }
-        
+
         const tableHTML = `
             <div class="table-container">
                 <table class="data-table">
@@ -295,13 +295,14 @@ async function loadUserBets(container) {
                             <th>状态</th>
                             <th>收益</th>
                             <th>时间</th>
+                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${bets.map(bet => `
                             <tr class="${bet.is_winner ? 'winner' : ''}">
                                 <td>第${bet.rounds?.round_number || '-'}期</td>
-                                <td>${bet.selected_numbers.join(', ')}</td>
+                                <td>${WinningNumbers.renderBetNumbers(bet.selected_numbers)}</td>
                                 <td>${formatCurrency(bet.bet_amount)}</td>
                                 <td>
                                     <span class="status ${bet.status}">
@@ -312,13 +313,18 @@ async function loadUserBets(container) {
                                     ${formatCurrency(bet.actual_payout)}
                                 </td>
                                 <td>${formatTime(bet.placed_at)}</td>
+                                <td>
+                                    <button class="detail-btn" onclick="viewBetDetail('${bet.id}')" title="查看详情">
+                                        📋 详情
+                                    </button>
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
             </div>
         `
-        
+
         container.innerHTML = tableHTML
     } catch (error) {
         container.innerHTML = `<p class="error-message">加载投注记录失败: ${error.message}</p>`
@@ -328,7 +334,7 @@ async function loadUserBets(container) {
 // 加载用户交易记录
 async function loadUserTransactions(container) {
     container.innerHTML = '<div class="loading">加载中...</div>'
-    
+
     // 这里可以加载充值和提现记录
     // 暂时显示占位内容
     container.innerHTML = `
@@ -342,22 +348,22 @@ async function loadUserTransactions(container) {
 async function loadHistoryData() {
     const container = document.querySelector('#historyModal .modal-body')
     if (!container) return
-    
+
     container.innerHTML = '<div class="loading">加载中...</div>'
-    
+
     try {
         const { data, error } = await supabaseClient.functions.invoke('get-history', {
             body: { type: 'rounds', limit: 50 }
         })
-        
+
         if (error) throw error
-        
+
         const rounds = data.data
         if (!rounds || rounds.length === 0) {
             container.innerHTML = '<p class="empty-message">暂无开奖记录</p>'
             return
         }
-        
+
         const tableHTML = `
             <div class="history-table-container">
                 <table class="data-table">
@@ -375,9 +381,7 @@ async function loadHistoryData() {
                             <tr>
                                 <td>第${round.round_number}期</td>
                                 <td class="winning-numbers">
-                                    ${round.winning_numbers.map(num => 
-                                        `<span class="number-badge">${num}</span>`
-                                    ).join('')}
+                                    ${WinningNumbers.render(round.winning_numbers, { size: 'small' })}
                                 </td>
                                 <td>${formatTime(round.draw_time)}</td>
                                 <td>${round.total_bets_count || 0}</td>
@@ -388,7 +392,7 @@ async function loadHistoryData() {
                 </table>
             </div>
         `
-        
+
         container.innerHTML = tableHTML
     } catch (error) {
         container.innerHTML = `<p class="error-message">加载历史记录失败: ${error.message}</p>`
@@ -399,26 +403,26 @@ async function loadHistoryData() {
 async function processRecharge() {
     const amountInput = document.getElementById('rechargeAmount')
     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')
-    
+
     if (!amountInput || !paymentMethod) {
         showToast('请填写完整信息', 'error')
         return
     }
-    
+
     const amount = parseFloat(amountInput.value)
     if (!amount || amount < 10) {
         showToast('充值金额不能少于10金币', 'error')
         return
     }
-    
+
     if (amount > 50000) {
         showToast('单次充值金额不能超过50000金币', 'error')
         return
     }
-    
+
     try {
         showToast('正在处理充值...', 'info')
-        
+
         const { data, error } = await supabaseClient.functions.invoke('manage-balance', {
             body: {
                 action: 'recharge',
@@ -428,19 +432,28 @@ async function processRecharge() {
                 paymentId: 'demo_' + Date.now()
             }
         })
-        
+
         if (error) throw error
-        
+
         showToast('充值成功！', 'success')
         closeModal('rechargeModal')
-        
+
         // 更新余额显示
         await updateBalance()
-        
+
     } catch (error) {
         showToast(`充值失败: ${error.message}`, 'error')
     }
 }
+
+// 查看投注详情
+function viewBetDetail(betId) {
+    // 在新窗口中打开详情页面
+    window.open(`bet-detail.html?id=${betId}`, '_blank')
+}
+
+// 导出函数供全局使用
+window.viewBetDetail = viewBetDetail
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {

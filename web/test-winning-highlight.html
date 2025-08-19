@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中奖高亮测试</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/winning-numbers.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-title {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .demo-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .demo-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .winning-numbers-demo {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .winning-numbers-demo h4 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🎯 中奖高亮功能测试</h1>
+
+        <!-- 中奖投注示例 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">🎉 中奖投注示例</h2>
+
+            <div class="demo-item">
+                <div class="demo-label">投注内容（5组中奖）</div>
+                <div id="winningBetNumbers"></div>
+                <div id="winningStats"></div>
+                <div id="winningPayout"></div>
+            </div>
+
+            <div class="winning-numbers-demo">
+                <h4>开奖数字：</h4>
+                <div id="winningNumbersDisplay"></div>
+            </div>
+        </div>
+
+        <!-- 部分中奖示例 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">🎯 部分中奖示例</h2>
+
+            <div class="demo-item">
+                <div class="demo-label">投注内容（2组中奖）</div>
+                <div id="partialWinBetNumbers"></div>
+                <div id="partialWinStats"></div>
+                <div id="partialWinPayout"></div>
+            </div>
+        </div>
+
+        <!-- 未中奖示例 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">❌ 未中奖示例</h2>
+
+            <div class="demo-item">
+                <div class="demo-label">投注内容（0组中奖）</div>
+                <div id="noWinBetNumbers"></div>
+                <div id="noWinStats"></div>
+            </div>
+        </div>
+
+        <!-- 功能说明 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">📖 功能说明</h2>
+            <div style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                <p><strong>🎯 中奖号码高亮：</strong></p>
+                <ul>
+                    <li>中奖的号码会有金色边框和发光效果</li>
+                    <li>中奖号码后面会显示 🎯 图标</li>
+                    <li>鼠标悬停会显示"(中奖!)"提示</li>
+                </ul>
+
+                <p><strong>📊 中奖统计：</strong></p>
+                <ul>
+                    <li>显示投注组数、中奖组数、中奖率</li>
+                    <li>显示中奖状态和中奖组别</li>
+                    <li>中奖时统计框会变成绿色</li>
+                </ul>
+
+                <p><strong>💰 实际赔付展示：</strong></p>
+                <ul>
+                    <li>有赔付时会显示醒目的绿色高亮框</li>
+                    <li>显示赔付金额和倍数</li>
+                    <li>带有闪光动画效果</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/winning-numbers.js"></script>
+    <script>
+        // 测试数据
+        const testData = {
+            // 开奖数字
+            winningNumbers: [9, 7, 3, 7, 4, 2, 6, 1, 2, 8],
+
+            // 中奖投注（5组中奖）
+            winningBet: {
+                selected_numbers: {
+                    "1": [6, 7, 8, 9, 10],  // 中奖：9
+                    "2": [6, 7, 8, 9, 10],  // 中奖：7
+                    "3": [1, 2, 3, 4, 5],   // 中奖：3
+                    "4": [],
+                    "5": [],
+                    "6": [1, 2, 3, 4, 5],   // 中奖：2
+                    "7": [1, 2, 3, 4, 5],   // 未中奖：6
+                    "8": [1, 2, 3, 4, 5],   // 中奖：1
+                    "9": [6, 7, 8, 9, 10],  // 未中奖：2
+                    "10": [6, 7, 8, 9, 10]  // 中奖：8
+                },
+                bet_amount: 60.00,
+                actual_payout: 480.00
+            },
+
+            // 部分中奖投注（2组中奖）
+            partialWinBet: {
+                selected_numbers: {
+                    "1": [1, 2, 3, 4, 5],   // 未中奖：9
+                    "2": [6, 7, 8, 9, 10],  // 中奖：7
+                    "3": [6, 7, 8, 9, 10],  // 未中奖：3
+                    "4": [],
+                    "5": [],
+                    "6": [],
+                    "7": [],
+                    "8": [1, 2, 3, 4, 5],   // 中奖：1
+                    "9": [],
+                    "10": []
+                },
+                bet_amount: 18.00,
+                actual_payout: 54.00
+            },
+
+            // 未中奖投注
+            noWinBet: {
+                selected_numbers: {
+                    "1": [1, 2, 3, 4, 5],   // 未中奖：9
+                    "2": [1, 2, 3, 4, 5],   // 未中奖：7
+                    "3": [6, 7, 8, 9, 10],  // 未中奖：3
+                    "4": [],
+                    "5": [],
+                    "6": [],
+                    "7": [],
+                    "8": [],
+                    "9": [],
+                    "10": []
+                },
+                bet_amount: 15.00,
+                actual_payout: 0.00
+            }
+        }
+
+        // 格式化货币
+        function formatCurrency(amount) {
+            return '¥' + amount.toFixed(2)
+        }
+
+        // 渲染中奖统计
+        function renderWinningStats(selectedNumbers, winningNumbers) {
+            const stats = WinningNumbers.calculateWinningStats(selectedNumbers, winningNumbers)
+
+            if (stats.totalGroups === 0) {
+                return ''
+            }
+
+            const hasWinnings = stats.winningGroups > 0
+            const winRate = (stats.winRate * 100).toFixed(1)
+
+            return `
+                <div class="winning-stats ${hasWinnings ? 'has-winnings' : ''}">
+                    <div class="winning-stats-title">
+                        ${hasWinnings ? '🎯' : '📊'} 中奖统计
+                    </div>
+                    <div class="winning-stats-content">
+                        <div class="winning-stat-item">
+                            <div class="winning-stat-label">投注组数</div>
+                            <div class="winning-stat-value">${stats.totalGroups}</div>
+                        </div>
+                        <div class="winning-stat-item">
+                            <div class="winning-stat-label">中奖组数</div>
+                            <div class="winning-stat-value ${hasWinnings ? 'success' : ''}">${stats.winningGroups}</div>
+                        </div>
+                        <div class="winning-stat-item">
+                            <div class="winning-stat-label">中奖率</div>
+                            <div class="winning-stat-value ${hasWinnings ? 'highlight' : ''}">${winRate}%</div>
+                        </div>
+                    </div>
+                    ${hasWinnings ? `
+                        <div style="margin-top: 10px; font-size: 14px; color: rgba(255,255,255,0.8);">
+                            中奖组别: ${stats.winningDetails
+                        .filter(detail => detail.isWinning)
+                        .map(detail => `第${detail.group}组`)
+                        .join(', ')}
+                        </div>
+                    ` : ''}
+                </div>
+            `
+        }
+
+        // 渲染赔付高亮
+        function renderPayoutHighlight(bet) {
+            if (bet.actual_payout <= 0) return ''
+
+            return `
+                <div class="payout-highlight">
+                    <div class="payout-highlight-title">
+                        🎉 实际赔付
+                    </div>
+                    <div class="payout-highlight-amount">
+                        ${formatCurrency(bet.actual_payout)}
+                    </div>
+                    <div class="payout-highlight-subtitle">
+                        投注 ${formatCurrency(bet.bet_amount)} → 获得 ${formatCurrency(bet.actual_payout)} (${(bet.actual_payout / bet.bet_amount).toFixed(1)}倍)
+                    </div>
+                </div>
+            `
+        }
+
+        // 初始化演示
+        function initDemo() {
+            // 开奖数字
+            document.getElementById('winningNumbersDisplay').innerHTML =
+                WinningNumbers.renderDetailed(testData.winningNumbers)
+
+            // 中奖投注示例
+            document.getElementById('winningBetNumbers').innerHTML =
+                WinningNumbers.renderBetNumbers(testData.winningBet.selected_numbers, { size: 'medium' }, testData.winningNumbers)
+
+            document.getElementById('winningStats').innerHTML =
+                renderWinningStats(testData.winningBet.selected_numbers, testData.winningNumbers)
+
+            document.getElementById('winningPayout').innerHTML =
+                renderPayoutHighlight(testData.winningBet)
+
+            // 部分中奖示例
+            document.getElementById('partialWinBetNumbers').innerHTML =
+                WinningNumbers.renderBetNumbers(testData.partialWinBet.selected_numbers, { size: 'medium' }, testData.winningNumbers)
+
+            document.getElementById('partialWinStats').innerHTML =
+                renderWinningStats(testData.partialWinBet.selected_numbers, testData.winningNumbers)
+
+            document.getElementById('partialWinPayout').innerHTML =
+                renderPayoutHighlight(testData.partialWinBet)
+
+            // 未中奖示例
+            document.getElementById('noWinBetNumbers').innerHTML =
+                WinningNumbers.renderBetNumbers(testData.noWinBet.selected_numbers, { size: 'medium' }, testData.winningNumbers)
+
+            document.getElementById('noWinStats').innerHTML =
+                renderWinningStats(testData.noWinBet.selected_numbers, testData.winningNumbers)
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initDemo)
+    </script>
+</body>
+
+</html>

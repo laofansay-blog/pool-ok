@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投注详情测试</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/winning-numbers.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-title {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .mock-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .mock-table th,
+        .mock-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .mock-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+        }
+        
+        .mock-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status.settled {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status.pending {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .positive {
+            color: #4caf50;
+        }
+        
+        .winner {
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .test-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .test-link {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .test-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🎯 投注详情功能测试</h1>
+        
+        <!-- 模拟投注记录表格 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">📋 投注记录列表（模拟）</h2>
+            <table class="mock-table">
+                <thead>
+                    <tr>
+                        <th>轮次</th>
+                        <th>选择数字</th>
+                        <th>投注金额</th>
+                        <th>状态</th>
+                        <th>收益</th>
+                        <th>时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="winner">
+                        <td>第138期</td>
+                        <td id="bet1Numbers"></td>
+                        <td>¥15.00</td>
+                        <td>
+                            <span class="status settled">已中奖</span>
+                        </td>
+                        <td class="positive">¥147.00</td>
+                        <td>2024-12-01 14:35</td>
+                        <td>
+                            <button class="detail-btn" onclick="openTestDetail('test-bet-1')">
+                                📋 详情
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>第137期</td>
+                        <td id="bet2Numbers"></td>
+                        <td>¥9.00</td>
+                        <td>
+                            <span class="status settled">未中奖</span>
+                        </td>
+                        <td>¥0.00</td>
+                        <td>2024-12-01 13:35</td>
+                        <td>
+                            <button class="detail-btn" onclick="openTestDetail('test-bet-2')">
+                                📋 详情
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>第136期</td>
+                        <td id="bet3Numbers"></td>
+                        <td>¥6.00</td>
+                        <td>
+                            <span class="status pending">待开奖</span>
+                        </td>
+                        <td>¥0.00</td>
+                        <td>2024-12-01 12:35</td>
+                        <td>
+                            <button class="detail-btn" onclick="openTestDetail('test-bet-3')">
+                                📋 详情
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 测试说明 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">📖 测试说明</h2>
+            <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                1. 点击表格中的"📋 详情"按钮可以查看投注详情<br>
+                2. 详情页面会在新窗口中打开<br>
+                3. 详情页面包含完整的投注信息、开奖结果、财务分析等<br>
+                4. 支持不同的投注状态：待开奖、已中奖、未中奖<br>
+                5. 彩色数字显示，每个位置对应不同颜色
+            </p>
+        </div>
+        
+        <!-- 直接测试链接 -->
+        <div class="test-section">
+            <h2 class="test-subtitle">🔗 直接测试链接</h2>
+            <div class="test-links">
+                <a href="bet-detail.html?id=test-bet-1" target="_blank" class="test-link">
+                    中奖投注详情
+                </a>
+                <a href="bet-detail.html?id=test-bet-2" target="_blank" class="test-link">
+                    未中奖投注详情
+                </a>
+                <a href="bet-detail.html?id=test-bet-3" target="_blank" class="test-link">
+                    待开奖投注详情
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/winning-numbers.js"></script>
+    <script>
+        // 模拟投注数据
+        const mockBets = {
+            'test-bet-1': {
+                "1": [1, 2],
+                "2": [3],
+                "3": [],
+                "4": [],
+                "5": [7],
+                "6": [],
+                "7": [],
+                "8": [],
+                "9": [],
+                "10": []
+            },
+            'test-bet-2': {
+                "1": [5],
+                "2": [],
+                "3": [8],
+                "4": [],
+                "5": [],
+                "6": [],
+                "7": [],
+                "8": [],
+                "9": [],
+                "10": [2]
+            },
+            'test-bet-3': {
+                "1": [1],
+                "2": [4],
+                "3": [],
+                "4": [],
+                "5": [],
+                "6": [],
+                "7": [],
+                "8": [],
+                "9": [],
+                "10": []
+            }
+        }
+        
+        // 初始化页面
+        function initPage() {
+            // 渲染投注数字
+            document.getElementById('bet1Numbers').innerHTML = 
+                WinningNumbers.renderBetNumbers(mockBets['test-bet-1'], { size: 'small' })
+            
+            document.getElementById('bet2Numbers').innerHTML = 
+                WinningNumbers.renderBetNumbers(mockBets['test-bet-2'], { size: 'small' })
+            
+            document.getElementById('bet3Numbers').innerHTML = 
+                WinningNumbers.renderBetNumbers(mockBets['test-bet-3'], { size: 'small' })
+        }
+        
+        // 打开测试详情页面
+        function openTestDetail(betId) {
+            window.open(`bet-detail.html?id=${betId}`, '_blank')
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initPage)
+    </script>
+</body>
+</html>

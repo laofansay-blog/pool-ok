@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第175期投注详情测试</title>
+    <link rel="stylesheet" href="web/styles/main.css">
+    <link rel="stylesheet" href="web/styles/winning-numbers.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-title {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1 class="test-title">第175期投注详情测试</h1>
+        <div id="betDetail"></div>
+    </div>
+
+    <script src="web/scripts/winning-numbers.js"></script>
+    <script>
+        // 模拟第175期的投注数据
+        const bet175 = {
+            id: 'test-bet-175',
+            user_id: 'test-user',
+            round_id: 'round-175',
+            selected_numbers: {
+                "1": [6, 7, 8, 9, 10],  // 开奖10 ✅
+                "2": [6, 7, 8, 9, 10],  // 开奖5 ❌
+                "3": [1, 2, 3, 4, 5],   // 开奖6 ❌
+                "4": [1, 2, 3, 4, 5],   // 开奖3 ✅
+                "5": [1, 2, 3, 4, 5],   // 开奖5 ✅
+                "6": [1, 2, 3, 4, 5],   // 开奖2 ✅
+                "7": [6, 7, 8, 9, 10],  // 开奖8 ✅
+                "8": [1, 2, 3, 4, 5],   // 开奖5 ✅
+                "9": [6, 7, 8, 9, 10],  // 开奖5 ❌
+                "10": [6, 7, 8, 9, 10]  // 开奖4 ❌
+            },
+            bet_amount: 60.00,
+            potential_payout: 588.00,
+            actual_payout: 78.40,  // 按新计算方式：6组中奖 × 2元 × 9.8倍 = 117.6元（假设）
+            is_winner: true,
+            status: 'settled',
+            placed_at: '2024-12-01T10:35:00Z',
+            settled_at: '2024-12-01T11:00:00Z',
+            metadata: {
+                original_bets: [
+                    { group: 1, number: 6, amount: 2 },
+                    { group: 1, number: 7, amount: 2 },
+                    { group: 1, number: 8, amount: 2 },
+                    { group: 1, number: 9, amount: 2 },
+                    { group: 1, number: 10, amount: 2 },  // 中奖
+                    { group: 2, number: 6, amount: 2 },
+                    { group: 2, number: 7, amount: 2 },
+                    { group: 2, number: 8, amount: 2 },
+                    { group: 2, number: 9, amount: 2 },
+                    { group: 2, number: 10, amount: 2 },
+                    // ... 其他投注
+                    { group: 4, number: 3, amount: 2 },   // 中奖
+                    { group: 5, number: 5, amount: 2 },   // 中奖
+                    { group: 6, number: 2, amount: 2 },   // 中奖
+                    { group: 7, number: 8, amount: 2 },   // 中奖
+                    { group: 8, number: 5, amount: 2 }    // 中奖
+                ]
+            }
+        }
+
+        const round175 = {
+            round_number: 175,
+            winning_numbers: [10, 5, 6, 3, 5, 2, 8, 5, 5, 4],
+            status: 'completed',
+            start_time: '2024-12-01T10:30:00Z',
+            end_time: '2024-12-01T10:59:00Z',
+            draw_time: '2024-12-01T11:00:00Z'
+        }
+
+        // 格式化货币
+        function formatCurrency(amount) {
+            return '¥' + amount.toFixed(2)
+        }
+
+        // 格式化时间
+        function formatTime(timeString) {
+            if (!timeString) return '-'
+            return new Date(timeString).toLocaleString('zh-CN')
+        }
+
+        // 渲染中奖统计
+        function renderWinningStats(selectedNumbers, winningNumbers) {
+            const stats = WinningNumbers.calculateWinningStats(selectedNumbers, winningNumbers)
+
+            if (stats.totalGroups === 0) {
+                return ''
+            }
+
+            const hasWinnings = stats.winningGroups > 0
+            const winRate = (stats.winRate * 100).toFixed(1)
+
+            return `
+                <div class="winning-stats ${hasWinnings ? 'has-winnings' : ''}">
+                    <div class="winning-stats-title">
+                        ${hasWinnings ? '🎯' : '📊'} 中奖统计
+                    </div>
+                    <div class="winning-stats-content">
+                        <div class="winning-stat-item">
+                            <div class="winning-stat-label">投注组数</div>
+                            <div class="winning-stat-value">${stats.totalGroups}</div>
+                        </div>
+                        <div class="winning-stat-item">
+                            <div class="winning-stat-label">中奖组数</div>
+                            <div class="winning-stat-value ${hasWinnings ? 'success' : ''}">${stats.winningGroups}</div>
+                        </div>
+                        <div class="winning-stat-item">
+                            <div class="winning-stat-label">中奖率</div>
+                            <div class="winning-stat-value ${hasWinnings ? 'highlight' : ''}">${winRate}%</div>
+                        </div>
+                    </div>
+                    ${hasWinnings ? `
+                        <div style="margin-top: 10px; font-size: 14px; color: rgba(255,255,255,0.8);">
+                            中奖组别: ${stats.winningDetails
+                        .filter(detail => detail.isWinning)
+                        .map(detail => `第${detail.group}组`)
+                        .join(', ')}
+                        </div>
+                    ` : ''}
+                </div>
+            `
+        }
+
+        // 渲染投注详情
+        function renderBetDetail(bet, round) {
+            // 实时计算是否中奖
+            let isActualWinner = false
+            if (round?.winning_numbers && round.winning_numbers.length > 0) {
+                const stats = WinningNumbers.calculateWinningStats(bet.selected_numbers, round.winning_numbers)
+                isActualWinner = stats.winningGroups >= 1 // 只要有一组中奖就算中奖
+            } else {
+                isActualWinner = bet.is_winner
+            }
+
+            const profitLoss = bet.actual_payout - bet.bet_amount
+            const profitLossClass = profitLoss > 0 ? 'positive' : profitLoss < 0 ? 'negative' : 'neutral'
+            const profitLossText = profitLoss > 0 ? `+${formatCurrency(profitLoss)}` : formatCurrency(profitLoss)
+
+            return `
+                <div class="bet-detail-card">
+                    <!-- 基本信息 -->
+                    <div class="detail-section">
+                        <h4 class="section-title">
+                            <span class="section-icon">📋</span>
+                            基本信息
+                            ${isActualWinner ? '<span class="winner-badge">🏆 中奖</span>' : ''}
+                        </h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">投注ID</div>
+                                <div class="detail-value">${bet.id}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">轮次</div>
+                                <div class="detail-value">第${round?.round_number || '-'}期</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">投注时间</div>
+                                <div class="detail-value">${formatTime(bet.placed_at)}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">状态</div>
+                                <div class="detail-value">
+                                    <span class="status ${bet.status}">
+                                        ${bet.status === 'settled' ? (isActualWinner ? '已中奖' : '未中奖') : '待开奖'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 投注内容 -->
+                    <div class="detail-section">
+                        <h4 class="section-title">
+                            <span class="section-icon">🎯</span>
+                            投注内容
+                        </h4>
+                        <div class="bet-numbers-display">
+                            ${WinningNumbers.renderBetNumbers(bet.selected_numbers, { size: 'medium' }, round?.winning_numbers)}
+                        </div>
+                        <div class="bet-description">
+                            ${WinningNumbers.formatBetNumbersText(bet.selected_numbers)}
+                        </div>
+                        ${renderWinningStats(bet.selected_numbers, round?.winning_numbers)}
+                    </div>
+
+                    <!-- 开奖结果 -->
+                    ${round?.winning_numbers && round.winning_numbers.length > 0 ? `
+                        <div class="detail-section">
+                            <h4 class="section-title">
+                                <span class="section-icon">🎲</span>
+                                开奖结果
+                            </h4>
+                            <div class="winning-numbers-display">
+                                ${WinningNumbers.renderDetailed(round.winning_numbers)}
+                            </div>
+                            <div class="draw-time">
+                                开奖时间: ${formatTime(round.draw_time)}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- 实际赔付醒目展示 -->
+                    ${(bet.actual_payout > 0 || isActualWinner) ? `
+                        <div class="payout-highlight">
+                            <div class="payout-highlight-title">
+                                🎉 实际赔付
+                            </div>
+                            <div class="payout-highlight-amount">
+                                ${formatCurrency(bet.actual_payout)}
+                            </div>
+                            <div class="payout-highlight-subtitle">
+                                投注 ${formatCurrency(bet.bet_amount)} → 获得 ${formatCurrency(bet.actual_payout)} (${(bet.actual_payout / bet.bet_amount).toFixed(1)}倍)
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- 财务信息 -->
+                    <div class="detail-section">
+                        <h4 class="section-title">
+                            <span class="section-icon">💰</span>
+                            财务信息
+                        </h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">投注金额</div>
+                                <div class="detail-value">${formatCurrency(bet.bet_amount)}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">潜在赔付</div>
+                                <div class="detail-value">${formatCurrency(bet.potential_payout)}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">实际赔付</div>
+                                <div class="detail-value ${bet.actual_payout > 0 ? 'success' : ''}">${formatCurrency(bet.actual_payout)}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">盈亏</div>
+                                <div class="detail-value ${profitLossClass}">
+                                    ${profitLossText}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="financial-analysis">
+                            <div class="analysis-item">
+                                <span>赔率:</span>
+                                <span>${(bet.potential_payout / bet.bet_amount).toFixed(2)}x</span>
+                            </div>
+                            <div class="analysis-item">
+                                <span>投资回报率:</span>
+                                <span class="${profitLossClass}">
+                                    ${((profitLoss / bet.bet_amount) * 100).toFixed(2)}%
+                                </span>
+                            </div>
+                            ${bet.status === 'settled' && bet.settled_at ? `
+                                <div class="analysis-item">
+                                    <span>结算时间:</span>
+                                    <span>${formatTime(bet.settled_at)}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `
+        }
+
+        // 初始化页面
+        function init() {
+            document.getElementById('betDetail').innerHTML = renderBetDetail(bet175, round175)
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init)
+    </script>
+</body>
+
+</html>

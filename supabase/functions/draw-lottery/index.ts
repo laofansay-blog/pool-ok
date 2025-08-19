@@ -24,21 +24,31 @@ function checkBetWinner(selectedNumbers: any, winningNumbers: number[]): boolean
   }
 
   // 新格式（JSONB对象）
-  // 检查每个组中选择的数字是否与对应位置的开奖数字匹配
+  // 计算中奖组数和总投注组数
+  let totalGroups = 0
+  let winningGroups = 0
+
   for (let group = 1; group <= 10; group++) {
     const groupKey = group.toString()
     const groupNumbers = selectedNumbers[groupKey] || []
 
     if (groupNumbers.length > 0) {
+      totalGroups++
       // 检查该组的开奖数字是否在用户选择的数字中
       const winningNumber = winningNumbers[group - 1] // 开奖数字数组索引从0开始
-      if (!groupNumbers.includes(winningNumber)) {
-        return false // 如果任何一组没有匹配，则不中奖
+      if (groupNumbers.includes(winningNumber)) {
+        winningGroups++
       }
     }
   }
 
-  return true // 所有有投注的组都匹配
+  // 如果没有投注任何组，则不中奖
+  if (totalGroups === 0) {
+    return false
+  }
+
+  // 中奖条件：只要有一组中奖就算中奖
+  return winningGroups >= 1
 }
 
 // 获取匹配的数字（新的JSONB格式）
@@ -68,6 +78,63 @@ function getMatchedNumbers(selectedNumbers: any, winningNumbers: number[]): any 
   }
 
   return matchedGroups
+}
+
+// 计算实际赔付金额（按单注计算）
+function calculateActualPayout(selectedNumbers: any, winningNumbers: number[], metadata: any): number {
+  // 如果是旧格式（数组），使用固定倍数
+  if (Array.isArray(selectedNumbers)) {
+    const matches = selectedNumbers.filter(num => winningNumbers.includes(num))
+    return matches.length * 2 * 9.8 // 假设每注2元，9.8倍赔率
+  }
+
+  // 新格式（JSONB对象）- 按单注计算
+  if (metadata && metadata.original_bets) {
+    let totalPayout = 0
+
+    // 遍历每个原始投注
+    metadata.original_bets.forEach((originalBet: any) => {
+      const group = originalBet.group
+      const number = originalBet.number
+      const amount = originalBet.amount
+
+      // 检查这一注是否中奖
+      if (group >= 1 && group <= 10) {
+        const winningNumber = winningNumbers[group - 1]
+        if (number === winningNumber) {
+          // 这一注中奖，赔付 = 投注金额 × 9.8
+          totalPayout += amount * 9.8
+        }
+      }
+    })
+
+    return totalPayout
+  }
+
+  // 如果没有原始投注数据，按组计算
+  let totalPayout = 0
+  let totalBetAmount = 0
+  let winningGroups = 0
+
+  for (let group = 1; group <= 10; group++) {
+    const groupKey = group.toString()
+    const groupNumbers = selectedNumbers[groupKey] || []
+
+    if (groupNumbers.length > 0) {
+      // 假设每个数字投注2元
+      const groupBetAmount = groupNumbers.length * 2
+      totalBetAmount += groupBetAmount
+
+      const winningNumber = winningNumbers[group - 1]
+      if (groupNumbers.includes(winningNumber)) {
+        winningGroups++
+        // 这组中奖，赔付 = 2元 × 9.8
+        totalPayout += 2 * 9.8
+      }
+    }
+  }
+
+  return totalPayout
 }
 
 serve(async (req) => {
@@ -158,23 +225,37 @@ serve(async (req) => {
 
         // 处理每个投注的结算
         if (bets && bets.length > 0) {
-          for (const bet of bets) {
-            const isWinner = checkBetWinner(bet.selected_numbers, winningNumbers)
-            const matchedNumbers = getMatchedNumbers(bet.selected_numbers, winningNumbers)
-            const actualPayout = isWinner ? bet.potential_payout : 0
+          console.log(`开始结算 ${bets.length} 笔投注...`)
 
+          for (const bet of bets) {
+            console.log(`结算投注 ${bet.id}...`)
+
+            // 第一步：判断是否中奖
+            const isWinner = checkBetWinner(bet.selected_numbers, winningNumbers)
+            console.log(`投注 ${bet.id} 中奖状态: ${isWinner}`)
+
+            // 第二步：计算实际赔付金额
+            let actualPayout = 0
             if (isWinner) {
+              actualPayout = calculateActualPayout(bet.selected_numbers, winningNumbers, bet.metadata)
+              console.log(`投注 ${bet.id} 实际赔付: ${actualPayout}`)
               winningBetsCount++
               totalPayout += actualPayout
+            } else {
+              console.log(`投注 ${bet.id} 未中奖，赔付为0`)
             }
 
-            // 更新投注记录
+            // 第三步：获取匹配数字信息
+            const matchedNumbers = getMatchedNumbers(bet.selected_numbers, winningNumbers)
+
+            // 第四步：更新投注记录的核心字段
+            console.log(`更新投注 ${bet.id} 的结算信息...`)
             const { error: betUpdateError } = await supabaseClient
               .from('bets')
               .update({
-                is_winner: isWinner,
+                is_winner: isWinner,           // 优先更新中奖状态
+                actual_payout: actualPayout,   // 然后更新实际赔付
                 matched_numbers: matchedNumbers,
-                actual_payout: actualPayout,
                 status: 'settled',
                 settled_at: drawTime
               })
@@ -182,6 +263,40 @@ serve(async (req) => {
 
             if (betUpdateError) {
               console.error(`更新投注记录失败: ${betUpdateError.message}`)
+              continue // 跳过余额更新，继续处理下一笔投注
+            } else {
+              console.log(`投注 ${bet.id} 结算信息更新成功`)
+            }
+
+            // 如果中奖，更新用户账户余额
+            if (isWinner && actualPayout > 0) {
+              try {
+                // 获取当前用户余额
+                const { data: userData, error: userError } = await supabaseClient.auth.admin.getUserById(bet.user_id)
+
+                if (userError) {
+                  console.error(`获取用户信息失败: ${userError.message}`)
+                } else {
+                  const currentBalance = parseFloat(userData.user?.user_metadata?.balance || '0')
+                  const newBalance = currentBalance + actualPayout
+
+                  // 更新用户余额
+                  const { error: balanceUpdateError } = await supabaseClient.auth.admin.updateUserById(bet.user_id, {
+                    user_metadata: {
+                      ...userData.user?.user_metadata,
+                      balance: newBalance.toString()
+                    }
+                  })
+
+                  if (balanceUpdateError) {
+                    console.error(`更新用户余额失败: ${balanceUpdateError.message}`)
+                  } else {
+                    console.log(`用户 ${bet.user_id} 中奖 ${actualPayout} 元，余额从 ${currentBalance} 更新为 ${newBalance}`)
+                  }
+                }
+              } catch (error) {
+                console.error(`处理用户余额更新时出错: ${error.message}`)
+              }
             }
           }
         }

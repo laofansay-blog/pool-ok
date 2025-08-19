@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投注记录状态测试</title>
+    <link rel="stylesheet" href="web/styles/main.css">
+    <link rel="stylesheet" href="web/styles/winning-numbers.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-title {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1 class="test-title">投注记录状态测试</h1>
+
+        <div class="test-section">
+            <h2 class="section-title">测试投注记录列表</h2>
+            <div id="betHistoryTable"></div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="section-title">说明</h2>
+            <div style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                <p>这个测试页面验证投注记录列表中的中奖状态是否正确显示：</p>
+                <ul>
+                    <li><strong>第138期</strong>：投注 [1-1,2], [2-3], [5-7] → 开奖 [1,5,3,8,2,9,4,6,10,7] → 应该显示"中奖"（3组都中奖）
+                    </li>
+                    <li><strong>第137期</strong>：投注 [1-5], [3-8], [10-2] → 开奖 [2,7,1,4,9,6,3,5,8,10] → 应该显示"中奖"（3组都中奖）
+                    </li>
+                    <li><strong>第175期</strong>：投注多组 → 开奖 [10,5,6,3,5,2,8,5,5,4] → 应该显示"中奖"（6组中奖）</li>
+                </ul>
+                <p><strong>高亮效果：</strong></p>
+                <ul>
+                    <li>🏆 中奖记录会有绿色渐变背景和左侧绿色边框</li>
+                    <li>✨ 中奖状态标签会是绿色的</li>
+                    <li>💰 收益金额会有绿色高亮和金币图标</li>
+                    <li>🌟 整行会有轻微的发光动画效果</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="web/scripts/winning-numbers.js"></script>
+    <script>
+        // 测试投注记录数据
+        const testBets = [
+            {
+                id: 'test-bet-1',
+                selected_numbers: {
+                    "1": [1, 2],
+                    "2": [3],
+                    "5": [7]
+                },
+                bet_amount: 15.00,
+                potential_payout: 147.00,
+                actual_payout: 147.00,
+                is_winner: true,
+                status: 'settled',
+                placed_at: '2024-12-01T14:35:00Z',
+                rounds: {
+                    round_number: 138,
+                    winning_numbers: [1, 5, 3, 8, 2, 9, 4, 6, 10, 7]
+                }
+            },
+            {
+                id: 'test-bet-2',
+                selected_numbers: {
+                    "1": [5],
+                    "3": [8],
+                    "10": [2]
+                },
+                bet_amount: 9.00,
+                potential_payout: 88.20,
+                actual_payout: 88.20,
+                is_winner: false, // 数据库中错误的状态
+                status: 'settled',
+                placed_at: '2024-12-01T13:35:00Z',
+                rounds: {
+                    round_number: 137,
+                    winning_numbers: [2, 7, 1, 4, 9, 6, 3, 5, 8, 10]
+                }
+            },
+            {
+                id: 'test-bet-175',
+                selected_numbers: {
+                    "1": [6, 7, 8, 9, 10],  // 开奖10 ✅
+                    "2": [6, 7, 8, 9, 10],  // 开奖5 ❌
+                    "3": [1, 2, 3, 4, 5],   // 开奖6 ❌
+                    "4": [1, 2, 3, 4, 5],   // 开奖3 ✅
+                    "5": [1, 2, 3, 4, 5],   // 开奖5 ✅
+                    "6": [1, 2, 3, 4, 5],   // 开奖2 ✅
+                    "7": [6, 7, 8, 9, 10],  // 开奖8 ✅
+                    "8": [1, 2, 3, 4, 5],   // 开奖5 ✅
+                    "9": [6, 7, 8, 9, 10],  // 开奖5 ❌
+                    "10": [6, 7, 8, 9, 10]  // 开奖4 ❌
+                },
+                bet_amount: 60.00,
+                potential_payout: 588.00,
+                actual_payout: 78.40,
+                is_winner: false, // 数据库中错误的状态
+                status: 'settled',
+                placed_at: '2024-12-01T10:35:00Z',
+                rounds: {
+                    round_number: 175,
+                    winning_numbers: [10, 5, 6, 3, 5, 2, 8, 5, 5, 4]
+                }
+            }
+        ]
+
+        // 格式化货币
+        function formatCurrency(amount) {
+            return '¥' + amount.toFixed(2)
+        }
+
+        // 格式化时间
+        function formatTime(timeString) {
+            if (!timeString) return '-'
+            return new Date(timeString).toLocaleString('zh-CN')
+        }
+
+        // 渲染投注记录表格
+        function renderBetHistoryTable(bets) {
+            return `
+                <div class="bet-history-container">
+                    <div class="bet-list-section">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>轮次</th>
+                                        <th>选择数字</th>
+                                        <th>投注金额</th>
+                                        <th>状态</th>
+                                        <th>收益</th>
+                                        <th>时间</th>
+                                        <th>分析</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${bets.map(bet => {
+                // 实时计算是否中奖
+                let isActualWinner = false
+                let winningAnalysis = ''
+                if (bet.rounds?.winning_numbers && bet.rounds.winning_numbers.length > 0) {
+                    const stats = WinningNumbers.calculateWinningStats(bet.selected_numbers, bet.rounds.winning_numbers)
+                    isActualWinner = stats.winningGroups >= 1
+                    winningAnalysis = `${stats.winningGroups}/${stats.totalGroups}组中奖 (${(stats.winRate * 100).toFixed(1)}%)`
+                } else {
+                    isActualWinner = bet.is_winner
+                    winningAnalysis = '未开奖'
+                }
+
+                return `
+                                            <tr class="${isActualWinner ? 'winner' : ''}">
+                                                <td>第${bet.rounds?.round_number || '-'}期</td>
+                                                <td>${WinningNumbers.renderBetNumbers(bet.selected_numbers)}</td>
+                                                <td>${formatCurrency(bet.bet_amount)}</td>
+                                                <td>
+                                                    <span class="status ${bet.status}">
+                                                        ${bet.status === 'settled' ? (isActualWinner ? '中奖' : '未中奖') : '待开奖'}
+                                                    </span>
+                                                    ${bet.is_winner !== isActualWinner ?
+                        `<br><small style="color: #ffc107;">数据库: ${bet.is_winner ? '中奖' : '未中奖'}</small>` :
+                        ''
+                    }
+                                                </td>
+                                                <td class="${bet.actual_payout > 0 ? 'positive' : ''}">
+                                                    ${formatCurrency(bet.actual_payout)}
+                                                </td>
+                                                <td>${formatTime(bet.placed_at)}</td>
+                                                <td>
+                                                    <small>${winningAnalysis}</small>
+                                                    ${bet.rounds?.winning_numbers ?
+                        `<br><small style="color: rgba(255,255,255,0.6);">开奖: ${bet.rounds.winning_numbers.join(',')}</small>` :
+                        ''
+                    }
+                                                </td>
+                                            </tr>
+                                        `
+            }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `
+        }
+
+        // 初始化页面
+        function init() {
+            document.getElementById('betHistoryTable').innerHTML = renderBetHistoryTable(testBets)
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init)
+    </script>
+</body>
+
+</html>

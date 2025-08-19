@@ -790,16 +790,16 @@ body {
 
 /* 最新开奖样式 */
 .results-list {
-  max-height: 300px;
+  max-height: 250px;
   overflow-y: auto;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 .history-item {
   background: rgba(0, 0, 0, 0.3);
-  padding: var(--spacing-md);
+  padding: 10px 12px;
   border-radius: var(--radius-md);
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 8px;
   border: 1px solid var(--border-dark);
   transition: all var(--transition-normal);
 }
@@ -809,24 +809,29 @@ body {
   box-shadow: var(--shadow-gold);
 }
 
+.round-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
 .round-number {
-  display: block;
   font-weight: 600;
   color: var(--text-gold);
-  margin-bottom: var(--spacing-xs);
+  font-size: 14px;
+}
+
+.round-time {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.8;
 }
 
 .winning-numbers {
   display: block;
   font-family: var(--font-title);
   color: var(--text-light);
-  margin-bottom: var(--spacing-xs);
-}
-
-.round-time {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--text-muted);
 }
 
 /* 快捷操作样式 */
@@ -1148,5 +1153,622 @@ body {
 
   .btn-large {
     width: 100%;
+  }
+}
+
+/* 投注详情按钮样式 */
+.detail-btn {
+  background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+  color: var(--text-dark);
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: var(--transition-normal);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.detail-btn:hover {
+  background: linear-gradient(45deg, var(--secondary-gold), var(--dark-gold));
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-gold);
+}
+
+.detail-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .detail-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+}
+
+/* 投注记录详情样式 */
+.bet-history-container {
+  position: relative;
+  min-height: 400px;
+}
+
+.bet-list-section,
+.bet-detail-section {
+  width: 100%;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--border-dark);
+}
+
+.back-to-list-btn {
+  background: linear-gradient(45deg, var(--bronze), var(--dark-bronze));
+  color: var(--text-light);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.back-to-list-btn:hover {
+  background: linear-gradient(45deg, var(--dark-bronze), var(--bronze));
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-dark);
+}
+
+.detail-title {
+  color: var(--text-gold);
+  font-size: 20px;
+  margin: 0;
+  font-family: var(--font-title);
+}
+
+.bet-detail-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid var(--border-dark);
+}
+
+.detail-section {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  color: var(--text-gold);
+  font-size: 16px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+}
+
+.section-icon {
+  font-size: 18px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.detail-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-label {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  color: var(--text-light);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.detail-value.positive {
+  color: #4caf50;
+}
+
+.detail-value.negative {
+  color: #f44336;
+}
+
+.detail-value.neutral {
+  color: #ffc107;
+}
+
+.winner-badge {
+  background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+  color: var(--text-dark);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.bet-numbers-display {
+  margin-bottom: 10px;
+}
+
+.bet-description {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--primary-gold);
+}
+
+.winning-numbers-display {
+  margin-bottom: 10px;
+}
+
+.draw-time {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+.bet-analysis,
+.financial-analysis {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  margin-top: 15px;
+}
+
+.analysis-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+.analysis-item:last-child {
+  margin-bottom: 0;
+}
+
+.analysis-item span:first-child {
+  color: var(--text-muted);
+}
+
+.analysis-item span:last-child {
+  font-weight: bold;
+}
+
+.loading-state,
+.error-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-light);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid var(--primary-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.retry-btn {
+  background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+  color: var(--text-dark);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: var(--transition-normal);
+}
+
+.retry-btn:hover {
+  background: linear-gradient(45deg, var(--secondary-gold), var(--dark-gold));
+  transform: translateY(-1px);
+}
+
+/* 紧凑版投注详情样式 */
+.bet-detail-card-compact {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg);
+  padding: 15px;
+  border: 1px solid var(--border-dark);
+}
+
+.detail-header-compact {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-dark);
+}
+
+.detail-title-compact {
+  color: var(--text-gold);
+  font-size: 18px;
+  margin: 0 0 5px 0;
+  font-family: var(--font-title);
+}
+
+.detail-meta {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.winner-badge-small {
+  background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+  color: var(--text-dark);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.detail-section-compact {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title-compact {
+  color: var(--text-gold);
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.draw-time-compact {
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: center;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+  margin-top: 8px;
+}
+
+/* 紧凑版中奖统计 */
+.winning-stats-compact {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.winning-stats-compact.has-winnings {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: rgba(76, 175, 80, 0.3);
+}
+
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+}
+
+.stats-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.stats-value {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text-light);
+}
+
+.stats-value.success {
+  color: #4CAF50;
+}
+
+.stats-value.highlight {
+  color: var(--primary-gold);
+}
+
+.winning-groups {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 紧凑版财务信息 */
+.financial-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.financial-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.financial-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.financial-value {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text-light);
+}
+
+.financial-value.success {
+  color: #4CAF50;
+}
+
+.financial-value.positive {
+  color: #4CAF50;
+}
+
+.financial-value.negative {
+  color: #f44336;
+}
+
+.financial-value.highlight {
+  color: var(--primary-gold);
+}
+
+/* 简洁版实际赔付 */
+.payout-simple {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-align: center;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.payout-label {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.payout-amount {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .bet-detail-card {
+    padding: 15px;
+  }
+
+  .detail-section {
+    padding: 12px;
+  }
+
+  .stats-row,
+  .financial-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .stats-item,
+  .financial-item {
+    flex-direction: row;
+    justify-content: space-between;
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+/* 投注记录表格样式 */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-dark);
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-dark);
+}
+
+.data-table th {
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-gold);
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.data-table td {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.data-table tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 中奖记录高亮样式 */
+.data-table tr.winner {
+  background: linear-gradient(90deg, rgba(76, 175, 80, 0.15), rgba(139, 195, 74, 0.1));
+  border-left: 4px solid #4caf50;
+  box-shadow: inset 0 0 20px rgba(76, 175, 80, 0.1);
+  position: relative;
+  animation: winnerGlow 2s ease-in-out infinite alternate;
+}
+
+/* 移除奖杯图标显示 */
+.data-table tr.winner::before {
+  display: none;
+}
+
+.data-table tr.winner td:first-child {
+  padding-left: 15px;
+}
+
+.data-table tr.winner:hover {
+  background: linear-gradient(90deg, rgba(76, 175, 80, 0.25), rgba(139, 195, 74, 0.15));
+  box-shadow: inset 0 0 30px rgba(76, 175, 80, 0.2);
+}
+
+/* 中奖状态标签样式 */
+.data-table .status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.data-table tr.winner .status.settled {
+  background: linear-gradient(45deg, #4caf50, #45a049);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.data-table tr:not(.winner) .status.settled {
+  background: linear-gradient(45deg, #757575, #616161);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.data-table .status.pending {
+  background: linear-gradient(45deg, #ff9800, #f57c00);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 收益金额高亮 */
+.data-table tr.winner .positive {
+  color: #4caf50;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  font-size: 15px;
+}
+
+.data-table tr.winner .positive::before {
+  content: '💰 ';
+  margin-right: 4px;
+}
+
+/* 动画效果 */
+@keyframes winnerGlow {
+  0% {
+    box-shadow: inset 0 0 20px rgba(76, 175, 80, 0.1);
+  }
+  100% {
+    box-shadow: inset 0 0 30px rgba(76, 175, 80, 0.2);
+  }
+}
+
+/* 奖杯弹跳动画已移除 */
+
+/* 表格容器 */
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-dark);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .data-table tr.winner td:first-child {
+    padding-left: 10px;
   }
 }

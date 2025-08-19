@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中奖逻辑测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-case {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+        }
+        .test-case.winning {
+            border-left-color: #4CAF50;
+            background: #f8fff8;
+        }
+        .test-case.losing {
+            border-left-color: #f44336;
+            background: #fff8f8;
+        }
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .test-details {
+            font-size: 14px;
+            color: #666;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .result.win {
+            background: #4CAF50;
+            color: white;
+        }
+        .result.lose {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>中奖逻辑测试</h1>
+    <p>测试规则：只要有一组中奖就算中奖</p>
+    
+    <div id="testResults"></div>
+
+    <script src="web/scripts/winning-numbers.js"></script>
+    <script>
+        // 测试用例
+        const testCases = [
+            {
+                name: "第175期实际投注 - 6组中奖",
+                selectedNumbers: {
+                    "1": [6, 7, 8, 9, 10],  // 开奖10 ✅
+                    "2": [6, 7, 8, 9, 10],  // 开奖5 ❌
+                    "3": [1, 2, 3, 4, 5],   // 开奖6 ❌
+                    "4": [1, 2, 3, 4, 5],   // 开奖3 ✅
+                    "5": [1, 2, 3, 4, 5],   // 开奖5 ✅
+                    "6": [1, 2, 3, 4, 5],   // 开奖2 ✅
+                    "7": [6, 7, 8, 9, 10],  // 开奖8 ✅
+                    "8": [1, 2, 3, 4, 5],   // 开奖5 ✅
+                    "9": [6, 7, 8, 9, 10],  // 开奖5 ❌
+                    "10": [6, 7, 8, 9, 10]  // 开奖4 ❌
+                },
+                winningNumbers: [10, 5, 6, 3, 5, 2, 8, 5, 5, 4],
+                expectedWin: true
+            },
+            {
+                name: "只有1组中奖",
+                selectedNumbers: {
+                    "1": [1, 2, 3, 4, 5],   // 开奖10 ❌
+                    "2": [1, 2, 3, 4, 5],   // 开奖5 ✅
+                    "3": [6, 7, 8, 9, 10]   // 开奖6 ❌
+                },
+                winningNumbers: [10, 5, 6, 3, 5, 2, 8, 5, 5, 4],
+                expectedWin: true
+            },
+            {
+                name: "0组中奖",
+                selectedNumbers: {
+                    "1": [1, 2, 3, 4, 5],   // 开奖10 ❌
+                    "2": [1, 2, 3, 4, 5],   // 开奖5 ❌ (5不在选择中)
+                    "3": [6, 7, 8, 9, 10]   // 开奖6 ❌ (6不在选择中)
+                },
+                winningNumbers: [10, 5, 6, 3, 5, 2, 8, 5, 5, 4],
+                expectedWin: false
+            },
+            {
+                name: "全部中奖",
+                selectedNumbers: {
+                    "1": [10],  // 开奖10 ✅
+                    "2": [5],   // 开奖5 ✅
+                    "3": [6]    // 开奖6 ✅
+                },
+                winningNumbers: [10, 5, 6, 3, 5, 2, 8, 5, 5, 4],
+                expectedWin: true
+            }
+        ]
+        
+        function runTests() {
+            const resultsDiv = document.getElementById('testResults')
+            let html = ''
+            
+            testCases.forEach((testCase, index) => {
+                const stats = WinningNumbers.calculateWinningStats(testCase.selectedNumbers, testCase.winningNumbers)
+                const actualWin = stats.winningGroups >= 1
+                const isCorrect = actualWin === testCase.expectedWin
+                
+                const winningGroups = []
+                stats.winningDetails.forEach(detail => {
+                    if (detail.isWinning) {
+                        winningGroups.push(`第${detail.group}组`)
+                    }
+                })
+                
+                html += `
+                    <div class="test-case ${actualWin ? 'winning' : 'losing'}">
+                        <div class="test-title">测试 ${index + 1}: ${testCase.name}</div>
+                        <div class="test-details">
+                            <div>投注组数: ${stats.totalGroups}</div>
+                            <div>中奖组数: ${stats.winningGroups}</div>
+                            <div>中奖率: ${(stats.winRate * 100).toFixed(1)}%</div>
+                            <div>中奖组别: ${winningGroups.join(', ') || '无'}</div>
+                            <div>开奖数字: ${testCase.winningNumbers.join(', ')}</div>
+                        </div>
+                        <div class="result ${actualWin ? 'win' : 'lose'}">
+                            ${actualWin ? '🎉 中奖' : '❌ 未中奖'} 
+                            ${isCorrect ? '✅ 正确' : '❌ 错误'}
+                        </div>
+                    </div>
+                `
+            })
+            
+            resultsDiv.innerHTML = html
+        }
+        
+        // 页面加载完成后运行测试
+        document.addEventListener('DOMContentLoaded', runTests)
+    </script>
+</body>
+</html>

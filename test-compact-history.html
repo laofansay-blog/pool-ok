@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>紧凑开奖历史测试</title>
+    <link rel="stylesheet" href="web/styles/main.css">
+    <link rel="stylesheet" href="web/styles/winning-numbers.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+        
+        .main-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-title {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .comparison-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .comparison-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .old-style .history-item {
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .old-style .round-number {
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .old-style .round-time {
+            display: block;
+            margin-top: 8px;
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="main-content">
+            <h1 class="test-title">开奖历史紧凑布局对比</h1>
+            
+            <div class="comparison">
+                <div class="comparison-item old-style">
+                    <h3 class="comparison-title">旧版布局（占用空间大）</h3>
+                    <div class="results-list" style="max-height: 200px;">
+                        <div class="history-item">
+                            <span class="round-number">第175期</span>
+                            <span class="winning-numbers">
+                                <span class="number-badge" style="background-color: #e74c3c; color: white;">10</span>
+                                <span class="number-badge" style="background-color: #f39c12; color: white;">5</span>
+                                <span class="number-badge" style="background-color: #f1c40f; color: black;">6</span>
+                            </span>
+                            <span class="round-time">2024-12-01 11:00</span>
+                        </div>
+                        <div class="history-item">
+                            <span class="round-number">第174期</span>
+                            <span class="winning-numbers">
+                                <span class="number-badge" style="background-color: #e74c3c; color: white;">3</span>
+                                <span class="number-badge" style="background-color: #f39c12; color: white;">7</span>
+                                <span class="number-badge" style="background-color: #f1c40f; color: black;">1</span>
+                            </span>
+                            <span class="round-time">2024-12-01 10:00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comparison-item">
+                    <h3 class="comparison-title">新版布局（紧凑）</h3>
+                    <div class="results-list" style="max-height: 200px;">
+                        <div class="history-item">
+                            <div class="round-header">
+                                <span class="round-number">第175期</span>
+                                <span class="round-time">2024-12-01 11:00</span>
+                            </div>
+                            <div class="winning-numbers">
+                                <span class="number-badge" style="background-color: #e74c3c; color: white;">10</span>
+                                <span class="number-badge" style="background-color: #f39c12; color: white;">5</span>
+                                <span class="number-badge" style="background-color: #f1c40f; color: black;">6</span>
+                                <span class="number-badge" style="background-color: #27ae60; color: white;">3</span>
+                                <span class="number-badge" style="background-color: #3498db; color: white;">5</span>
+                            </div>
+                        </div>
+                        <div class="history-item">
+                            <div class="round-header">
+                                <span class="round-number">第174期</span>
+                                <span class="round-time">2024-12-01 10:00</span>
+                            </div>
+                            <div class="winning-numbers">
+                                <span class="number-badge" style="background-color: #e74c3c; color: white;">3</span>
+                                <span class="number-badge" style="background-color: #f39c12; color: white;">7</span>
+                                <span class="number-badge" style="background-color: #f1c40f; color: black;">1</span>
+                                <span class="number-badge" style="background-color: #27ae60; color: white;">9</span>
+                                <span class="number-badge" style="background-color: #3498db; color: white;">4</span>
+                            </div>
+                        </div>
+                        <div class="history-item">
+                            <div class="round-header">
+                                <span class="round-number">第173期</span>
+                                <span class="round-time">2024-12-01 09:00</span>
+                            </div>
+                            <div class="winning-numbers">
+                                <span class="number-badge" style="background-color: #e74c3c; color: white;">8</span>
+                                <span class="number-badge" style="background-color: #f39c12; color: white;">2</span>
+                                <span class="number-badge" style="background-color: #f1c40f; color: black;">6</span>
+                                <span class="number-badge" style="background-color: #27ae60; color: white;">1</span>
+                                <span class="number-badge" style="background-color: #3498db; color: white;">9</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                <h3 style="color: white; margin-bottom: 15px;">改进效果：</h3>
+                <ul>
+                    <li>✅ <strong>期数和时间在一行</strong>：节省垂直空间</li>
+                    <li>✅ <strong>减少内边距</strong>：从16px减少到10px-12px</li>
+                    <li>✅ <strong>减少间距</strong>：项目间距从12px减少到8px</li>
+                    <li>✅ <strong>字体优化</strong>：时间字体更小，透明度降低</li>
+                    <li>✅ <strong>整体高度减少</strong>：从300px减少到250px</li>
+                    <li>✅ <strong>显示更多内容</strong>：同样空间可以显示更多历史记录</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <section class="latest-results">
+                <h3 class="sidebar-title">最新开奖（实际效果）</h3>
+                <div class="results-list" id="testHistoryList">
+                    <!-- 这里会显示实际的紧凑布局 -->
+                </div>
+                <button class="btn btn-text">查看更多</button>
+            </section>
+        </div>
+    </div>
+
+    <script src="web/scripts/winning-numbers.js"></script>
+    <script>
+        // 模拟开奖历史数据
+        const mockHistory = [
+            {
+                round_number: 175,
+                winning_numbers: [10, 5, 6, 3, 5, 2, 8, 5, 5, 4],
+                draw_time: '2024-12-01T11:00:00Z'
+            },
+            {
+                round_number: 174,
+                winning_numbers: [3, 7, 1, 9, 4, 6, 2, 8, 5, 10],
+                draw_time: '2024-12-01T10:00:00Z'
+            },
+            {
+                round_number: 173,
+                winning_numbers: [8, 2, 6, 1, 9, 3, 7, 4, 10, 5],
+                draw_time: '2024-12-01T09:00:00Z'
+            },
+            {
+                round_number: 172,
+                winning_numbers: [5, 9, 2, 7, 1, 8, 4, 3, 6, 10],
+                draw_time: '2024-12-01T08:00:00Z'
+            },
+            {
+                round_number: 171,
+                winning_numbers: [1, 4, 8, 5, 3, 9, 6, 2, 7, 10],
+                draw_time: '2024-12-01T07:00:00Z'
+            }
+        ]
+        
+        // 格式化时间
+        function formatTime(timeString) {
+            return new Date(timeString).toLocaleString('zh-CN', {
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+        }
+        
+        // 渲染测试历史记录
+        function renderTestHistory() {
+            const historyList = document.getElementById('testHistoryList')
+            
+            historyList.innerHTML = mockHistory.map(round =>
+                `<div class="history-item">
+                    <div class="round-header">
+                        <span class="round-number">第${round.round_number}期</span>
+                        <span class="round-time">${formatTime(round.draw_time)}</span>
+                    </div>
+                    <div class="winning-numbers">
+                        ${WinningNumbers.renderCompact(round.winning_numbers)}
+                    </div>
+                </div>`
+            ).join('')
+        }
+        
+        // 页面加载完成后渲染
+        document.addEventListener('DOMContentLoaded', renderTestHistory)
+    </script>
+</body>
+</html>

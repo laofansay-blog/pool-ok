@@ -1,6 +1,10 @@
 // 投注详情页面逻辑
 class BetDetailPage {
     constructor() {
+        // 使用配置文件中的常量
+        const SUPABASE_URL = CONFIG?.SUPABASE_URL || 'https://deyugfnymgyxcfacxtjy.supabase.co'
+        const SUPABASE_ANON_KEY = CONFIG?.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRleXVnZm55bWd5eGNmYWN4dGp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQxMzY1OTcsImV4cCI6MjA2OTcxMjU5N30.9-hEjAjJEU3RP-Jbv2MeLv-56MXmXEdZDTNYhfqVX1g'
+
         this.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
         this.betId = null
         this.betData = null
@@ -8,20 +12,41 @@ class BetDetailPage {
     }
 
     init() {
+        console.log('BetDetailPage 初始化开始')
+
         // 从URL参数获取投注ID
         const urlParams = new URLSearchParams(window.location.search)
         this.betId = urlParams.get('id')
-        
+
+        console.log('获取到的投注ID:', this.betId)
+
         if (!this.betId) {
+            console.log('未找到投注ID，显示错误')
             this.showError('未找到投注ID')
             return
         }
 
+        console.log('开始加载投注详情')
         this.loadBetDetail()
     }
 
     async loadBetDetail() {
         try {
+            // 检查是否是测试数据
+            if (this.betId.startsWith('test-bet-')) {
+                console.log('使用测试数据，ID:', this.betId)
+                this.betData = this.getTestData(this.betId)
+                console.log('获取到的测试数据:', this.betData)
+
+                if (!this.betData) {
+                    this.showError('未找到测试数据: ' + this.betId)
+                    return
+                }
+
+                this.renderBetDetail()
+                return
+            }
+
             const { data, error } = await this.supabaseClient
                 .from('bets')
                 .select(`
@@ -53,10 +78,156 @@ class BetDetailPage {
         }
     }
 
+    getTestData(betId) {
+        const testData = {
+            'test-bet-1': {
+                id: 'test-bet-1',
+                user_id: 'test-user',
+                round_id: 'test-round-138',
+                selected_numbers: {
+                    "1": [1, 2],
+                    "2": [3],
+                    "3": [],
+                    "4": [],
+                    "5": [7],
+                    "6": [],
+                    "7": [],
+                    "8": [],
+                    "9": [],
+                    "10": []
+                },
+                bet_amount: 15.00,
+                potential_payout: 147.00,
+                actual_payout: 147.00,
+                is_winner: true,
+                matched_numbers: [1, 3, 7],
+                status: 'settled',
+                placed_at: '2024-12-01T14:35:00Z',
+                settled_at: '2024-12-01T15:00:00Z',
+                metadata: {
+                    original_bets: [
+                        { group: 1, number: 1, amount: 3 },
+                        { group: 1, number: 2, amount: 3 },
+                        { group: 2, number: 3, amount: 3 },
+                        { group: 5, number: 7, amount: 6 }
+                    ],
+                    bet_count: 4,
+                    groups_used: ["1", "2", "5"]
+                },
+                rounds: {
+                    round_number: 138,
+                    winning_numbers: [1, 5, 3, 8, 2, 9, 4, 6, 10, 7],
+                    status: 'completed',
+                    start_time: '2024-12-01T14:30:00Z',
+                    end_time: '2024-12-01T14:59:00Z',
+                    draw_time: '2024-12-01T15:00:00Z'
+                }
+            },
+            'test-bet-2': {
+                id: 'test-bet-2',
+                user_id: 'test-user',
+                round_id: 'test-round-137',
+                selected_numbers: {
+                    "1": [5],
+                    "2": [],
+                    "3": [8],
+                    "4": [],
+                    "5": [],
+                    "6": [],
+                    "7": [],
+                    "8": [],
+                    "9": [],
+                    "10": [2]
+                },
+                bet_amount: 9.00,
+                potential_payout: 88.20,
+                actual_payout: 0.00,
+                is_winner: false,
+                matched_numbers: [],
+                status: 'settled',
+                placed_at: '2024-12-01T13:35:00Z',
+                settled_at: '2024-12-01T14:00:00Z',
+                metadata: {
+                    original_bets: [
+                        { group: 1, number: 5, amount: 3 },
+                        { group: 3, number: 8, amount: 3 },
+                        { group: 10, number: 2, amount: 3 }
+                    ],
+                    bet_count: 3,
+                    groups_used: ["1", "3", "10"]
+                },
+                rounds: {
+                    round_number: 137,
+                    winning_numbers: [2, 7, 1, 4, 9, 6, 3, 5, 8, 10],
+                    status: 'completed',
+                    start_time: '2024-12-01T13:30:00Z',
+                    end_time: '2024-12-01T13:59:00Z',
+                    draw_time: '2024-12-01T14:00:00Z'
+                }
+            },
+            'test-bet-3': {
+                id: 'test-bet-3',
+                user_id: 'test-user',
+                round_id: 'test-round-136',
+                selected_numbers: {
+                    "1": [1],
+                    "2": [4],
+                    "3": [],
+                    "4": [],
+                    "5": [],
+                    "6": [],
+                    "7": [],
+                    "8": [],
+                    "9": [],
+                    "10": []
+                },
+                bet_amount: 6.00,
+                potential_payout: 58.80,
+                actual_payout: 0.00,
+                is_winner: false,
+                matched_numbers: [],
+                status: 'pending',
+                placed_at: '2024-12-01T12:35:00Z',
+                settled_at: null,
+                metadata: {
+                    original_bets: [
+                        { group: 1, number: 1, amount: 3 },
+                        { group: 2, number: 4, amount: 3 }
+                    ],
+                    bet_count: 2,
+                    groups_used: ["1", "2"]
+                },
+                rounds: {
+                    round_number: 136,
+                    winning_numbers: [],
+                    status: 'pending',
+                    start_time: '2024-12-01T12:30:00Z',
+                    end_time: '2024-12-01T12:59:00Z',
+                    draw_time: null
+                }
+            }
+        }
+
+        const result = testData[betId] || null
+        console.log('getTestData 返回结果:', result)
+        return result
+    }
+
     renderBetDetail() {
+        console.log('开始渲染投注详情，数据:', this.betData)
+
+        if (!this.betData) {
+            console.error('投注数据为空')
+            this.showError('投注数据为空')
+            return
+        }
+
         const bet = this.betData
         const round = bet.rounds
-        
+
+        console.log('投注数据:', bet)
+        console.log('轮次数据:', round)
+
         // 计算盈亏
         const profitLoss = bet.actual_payout - bet.bet_amount
         const profitLossClass = profitLoss > 0 ? 'positive' : profitLoss < 0 ? 'negative' : 'neutral'
@@ -220,7 +391,7 @@ class BetDetailPage {
 
         const originalBets = bet.metadata.original_bets
         const groupStats = {}
-        
+
         // 统计每组的投注
         originalBets.forEach(originalBet => {
             const group = originalBet.group
@@ -258,7 +429,7 @@ class BetDetailPage {
     renderMatchedNumbers(matchedNumbers, winningNumbers) {
         // 这里可以根据新的JSONB格式来显示匹配情况
         if (Array.isArray(matchedNumbers)) {
-            return matchedNumbers.map(num => 
+            return matchedNumbers.map(num =>
                 `<span class="number-badge" style="background: #4caf50; color: white;">${num}</span>`
             ).join(' ')
         }
@@ -267,15 +438,15 @@ class BetDetailPage {
 
     renderMetadata(metadata) {
         let html = '<div class="detail-grid">'
-        
+
         if (metadata.original_bets) {
             html += `
                 <div class="detail-item">
                     <div class="detail-label">原始投注记录</div>
                     <div class="detail-value">
-                        ${metadata.original_bets.map(bet => 
-                            `第${bet.group}组-${bet.number}: ${formatCurrency(bet.amount)}`
-                        ).join('<br>')}
+                        ${metadata.original_bets.map(bet =>
+                `第${bet.group}组-${bet.number}: ${formatCurrency(bet.amount)}`
+            ).join('<br>')}
                     </div>
                 </div>
             `

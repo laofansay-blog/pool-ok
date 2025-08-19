@@ -554,11 +554,13 @@ async function loadHistory() {
 
         historyList.innerHTML = rounds.map(round =>
             `<div class="history-item">
-                <span class="round-number">第${round.round_number}期</span>
-                <span class="winning-numbers">
+                <div class="round-header">
+                    <span class="round-number">第${round.round_number}期</span>
+                    <span class="round-time">${formatTime(round.draw_time)}</span>
+                </div>
+                <div class="winning-numbers">
                     ${WinningNumbers.renderCompact(round.winning_numbers)}
-                </span>
-                <span class="round-time">${formatTime(round.draw_time)}</span>
+                </div>
             </div>`
         ).join('')
     } catch (error) {

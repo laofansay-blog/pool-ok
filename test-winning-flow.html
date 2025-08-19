@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中奖流程测试</title>
+    <link rel="stylesheet" href="web/styles/main.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-title {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .flow-step {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .step-title {
+            color: #4CAF50;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-content {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .highlight {
+            background: rgba(255, 193, 7, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #FFC107;
+        }
+        
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .warning {
+            color: #FF9800;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🎯 中奖后的完整流程验证</h1>
+        
+        <div class="flow-step">
+            <div class="step-title">
+                <span>1️⃣</span>
+                <span>开奖触发</span>
+            </div>
+            <div class="step-content">
+                <p><strong>触发方式：</strong></p>
+                <ul>
+                    <li>🕐 <span class="highlight">定时开奖</span>：每5分钟自动执行 <code>scheduled-lottery</code> 函数</li>
+                    <li>👨‍💼 <span class="highlight">手动开奖</span>：管理员调用 <code>draw-lottery</code> 函数</li>
+                    <li>🔄 <span class="highlight">重新计算</span>：调用 <code>recalculate-round</code> 函数</li>
+                </ul>
+                <div class="code-block">
+// 生成开奖数字
+const winningNumbers = generateWinningNumbers() // [2,5,3,1,6,3,7,9,2,8]
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-step">
+            <div class="step-title">
+                <span>2️⃣</span>
+                <span>中奖判断</span>
+            </div>
+            <div class="step-content">
+                <p><strong>判断逻辑：</strong></p>
+                <ul>
+                    <li>📊 遍历每个投注记录的 <code>selected_numbers</code></li>
+                    <li>🎯 检查每组投注是否包含对应位置的开奖数字</li>
+                    <li>✅ <span class="success">中奖条件：只要有一组中奖就算中奖</span></li>
+                </ul>
+                <div class="code-block">
+// 中奖判断函数
+function checkBetWinner(selectedNumbers, winningNumbers) {
+  let winningGroups = 0
+  for (let group = 1; group <= 10; group++) {
+    const groupNumbers = selectedNumbers[group.toString()] || []
+    if (groupNumbers.includes(winningNumbers[group - 1])) {
+      winningGroups++
+    }
+  }
+  return winningGroups >= 1 // 只要有一组中奖就算中奖
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-step">
+            <div class="step-title">
+                <span>3️⃣</span>
+                <span>赔付计算</span>
+            </div>
+            <div class="step-content">
+                <p><strong>计算公式：</strong></p>
+                <ul>
+                    <li>💰 <span class="highlight">按单注计算</span>：中奖注数 × 单注金额 × 9.8倍</li>
+                    <li>📋 使用 <code>metadata.original_bets</code> 中的详细投注信息</li>
+                    <li>🎯 <span class="success">第183期：2注中奖 × 2元 × 9.8 = 39.2元</span></li>
+                </ul>
+                <div class="code-block">
+// 赔付计算函数
+function calculateActualPayout(selectedNumbers, winningNumbers, metadata) {
+  let totalPayout = 0
+  metadata.original_bets.forEach(originalBet => {
+    const { group, number, amount } = originalBet
+    const winningNumber = winningNumbers[group - 1]
+    if (number === winningNumber) {
+      totalPayout += amount * 9.8 // 中奖注 × 9.8倍
+    }
+  })
+  return totalPayout
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-step">
+            <div class="step-title">
+                <span>4️⃣</span>
+                <span>数据更新</span>
+            </div>
+            <div class="step-content">
+                <p><strong>更新内容：</strong></p>
+                <ul>
+                    <li>📝 <span class="highlight">投注记录</span>：更新 <code>is_winner</code>、<code>actual_payout</code>、<code>status</code></li>
+                    <li>💳 <span class="highlight">用户余额</span>：增加中奖金额到用户账户</li>
+                    <li>📊 <span class="highlight">轮次统计</span>：更新 <code>total_payout</code></li>
+                </ul>
+                <div class="code-block">
+// 更新投注记录
+await supabaseClient.from('bets').update({
+  is_winner: true,
+  actual_payout: 39.2,
+  status: 'settled',
+  settled_at: new Date()
+}).eq('id', bet.id)
+
+// 更新用户余额
+const newBalance = currentBalance + actualPayout
+await supabaseClient.auth.admin.updateUserById(bet.user_id, {
+  user_metadata: { balance: newBalance.toString() }
+})
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-step">
+            <div class="step-title">
+                <span>5️⃣</span>
+                <span>前端显示</span>
+            </div>
+            <div class="step-content">
+                <p><strong>显示更新：</strong></p>
+                <ul>
+                    <li>🏆 <span class="highlight">投注记录列表</span>：显示中奖高亮和收益金额</li>
+                    <li>📋 <span class="highlight">投注详情页</span>：显示实际赔付和中奖状态</li>
+                    <li>💰 <span class="highlight">用户余额</span>：个人中心显示更新后的余额</li>
+                    <li>📈 <span class="highlight">开奖历史</span>：首页显示最新开奖结果</li>
+                </ul>
+                <div class="code-block">
+// 前端中奖状态判断
+const stats = WinningNumbers.calculateWinningStats(selectedNumbers, winningNumbers)
+const isWinner = stats.winningGroups >= 1
+
+// 投注记录高亮
+&lt;tr class="${isWinner ? 'winner' : ''}"&gt;
+  &lt;td&gt;${formatCurrency(actualPayout)}&lt;/td&gt;
+&lt;/tr&gt;
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-step">
+            <div class="step-title">
+                <span>✅</span>
+                <span>第183期验证结果</span>
+            </div>
+            <div class="step-content">
+                <p><strong>实际执行结果：</strong></p>
+                <ul>
+                    <li>🎲 <span class="success">开奖数字</span>：[2, 5, 3, 1, 6, 3, 7, 9, 2, 8]</li>
+                    <li>🎯 <span class="success">中奖判断</span>：1笔投注中奖</li>
+                    <li>💰 <span class="success">赔付计算</span>：2注中奖 × 2元 × 9.8 = 39.2元</li>
+                    <li>📝 <span class="success">投注更新</span>：actual_payout = 39.2</li>
+                    <li>💳 <span class="success">余额更新</span>：用户余额增加39.2元</li>
+                </ul>
+                <div class="code-block">
+✅ 重新计算成功!
+📊 结算结果:
+   轮次: 第183期
+   开奖数字: 2, 5, 3, 1, 6, 3, 7, 9, 2, 8
+   总投注数: 1
+   中奖投注数: 1
+   总赔付金额: ¥39.20
+                </div>
+                <p class="success">🎉 所有流程执行正确！中奖后已正确更新投注状态、收益金额和用户余额。</p>
+            </div>
+        </div>
+
+        <div class="flow-step">
+            <div class="step-title">
+                <span>🔍</span>
+                <span>验证方法</span>
+            </div>
+            <div class="step-content">
+                <p><strong>如何验证：</strong></p>
+                <ol>
+                    <li>🔐 <span class="highlight">登录账户</span>：查看个人中心的余额是否增加了39.2元</li>
+                    <li>📋 <span class="highlight">投注记录</span>：查看第183期投注记录是否显示"中奖"和收益39.2元</li>
+                    <li>📄 <span class="highlight">投注详情</span>：点击详情查看是否显示实际赔付39.2元</li>
+                    <li>🏆 <span class="highlight">高亮效果</span>：中奖记录是否有绿色高亮和奖杯图标</li>
+                </ol>
+                <p class="warning">⚠️ 如果显示不正确，请刷新页面或重新登录以获取最新数据。</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

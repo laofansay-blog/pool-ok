@@ -140,9 +140,10 @@ class WinningNumbersComponent {
      * 渲染投注记录中的选择数字（JSONB格式）
      * @param {Object|Array} selectedNumbers - 投注的数字（可能是JSONB对象或旧格式数组）
      * @param {Object} options - 配置选项
+     * @param {Array} winningNumbers - 开奖数字（用于高亮中奖号码）
      * @returns {string} HTML字符串
      */
-    renderBetNumbers(selectedNumbers, options = {}) {
+    renderBetNumbers(selectedNumbers, options = {}, winningNumbers = null) {
         const { size = 'small', showEmpty = false } = options
 
         // 如果是旧格式（数组），直接渲染
@@ -177,11 +178,22 @@ class WinningNumbersComponent {
                 <div class="bet-numbers-container">
                     ${betNumbers.map(({ group, number }) => {
                 const colors = this.getPositionColor(group - 1)
+
+                // 检查是否中奖（如果提供了开奖数字）
+                let isWinning = false
+                if (winningNumbers && winningNumbers.length >= group) {
+                    const winningNumber = winningNumbers[group - 1]
+                    isWinning = number === winningNumber
+                }
+
+                const winningClass = isWinning ? 'winning-number' : ''
+                const winningIcon = isWinning ? ' 🎯' : ''
+
                 return `
-                            <span class="bet-number-badge ${size}"
+                            <span class="bet-number-badge ${size} ${winningClass}"
                                   style="background-color: ${colors.backgroundColor}; color: ${colors.textColor};"
-                                  title="第${group}组: ${number}">
-                                ${group}-${number}
+                                  title="第${group}组: ${number}${isWinning ? ' (中奖!)' : ''}">
+                                ${group}-${number}${winningIcon}
                             </span>
                         `
             }).join('')}
@@ -222,6 +234,64 @@ class WinningNumbersComponent {
         }
 
         return '数据格式错误'
+    }
+
+    /**
+     * 计算中奖组数和详细信息
+     * @param {Object|Array} selectedNumbers - 投注的数字
+     * @param {Array} winningNumbers - 开奖数字
+     * @returns {Object} 中奖统计信息
+     */
+    calculateWinningStats(selectedNumbers, winningNumbers) {
+        if (!winningNumbers || winningNumbers.length === 0) {
+            return { totalGroups: 0, winningGroups: 0, winningDetails: [], winRate: 0 }
+        }
+
+        // 如果是旧格式（数组）
+        if (Array.isArray(selectedNumbers)) {
+            const matches = selectedNumbers.filter(num => winningNumbers.includes(num))
+            return {
+                totalGroups: selectedNumbers.length,
+                winningGroups: matches.length,
+                winningDetails: matches.map(num => ({ number: num, isWinning: true })),
+                winRate: matches.length / selectedNumbers.length
+            }
+        }
+
+        // 新格式（JSONB对象）
+        const winningDetails = []
+        let totalGroups = 0
+        let winningGroups = 0
+
+        for (let group = 1; group <= 10; group++) {
+            const groupKey = group.toString()
+            const groupNumbers = selectedNumbers[groupKey] || []
+
+            if (groupNumbers.length > 0) {
+                totalGroups++
+                const winningNumber = winningNumbers[group - 1]
+                const isGroupWinning = groupNumbers.includes(winningNumber)
+
+                if (isGroupWinning) {
+                    winningGroups++
+                }
+
+                winningDetails.push({
+                    group: group,
+                    numbers: groupNumbers,
+                    winningNumber: winningNumber,
+                    isWinning: isGroupWinning,
+                    matchedNumbers: isGroupWinning ? [winningNumber] : []
+                })
+            }
+        }
+
+        return {
+            totalGroups,
+            winningGroups,
+            winningDetails: winningDetails.filter(detail => detail.numbers.length > 0),
+            winRate: totalGroups > 0 ? winningGroups / totalGroups : 0
+        }
     }
 }
 

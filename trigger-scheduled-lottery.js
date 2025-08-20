@@ -5,8 +5,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 async function triggerScheduledLottery() {
     try {
         console.log('手动触发定时开奖函数...')
-        
-        const response = await fetch(`${SUPABASE_URL}/functions/v1/scheduled-lottery`, {
+
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/scheduled-lottery-v2`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -15,12 +15,12 @@ async function triggerScheduledLottery() {
             },
             body: JSON.stringify({})
         })
-        
+
         console.log('响应状态:', response.status)
-        
+
         const result = await response.json()
         console.log('响应内容:', JSON.stringify(result, null, 2))
-        
+
         if (result.success) {
             console.log('✅ 定时开奖执行成功!')
             if (result.data && result.data.length > 0) {
@@ -38,7 +38,7 @@ async function triggerScheduledLottery() {
         } else {
             console.log('❌ 定时开奖执行失败:', result.error || result.message)
         }
-        
+
     } catch (error) {
         console.error('触发定时开奖失败:', error)
     }

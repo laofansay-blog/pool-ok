@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轮次管理 - 幸运锅屋</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .manager-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .control-panel {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid var(--border-gold);
+        }
+        .status-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .status-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-dark);
+            text-align: center;
+        }
+        .status-value {
+            font-size: 1.5rem;
+            color: var(--text-gold);
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .log-display {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .auto-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff4444;
+        }
+        .status-indicator.active {
+            background: #44ff44;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="manager-container">
+        <h1 style="color: var(--text-gold); text-align: center; font-family: var(--font-title);">
+            🎲 轮次管理系统
+        </h1>
+        
+        <!-- 当前状态显示 -->
+        <div class="control-panel">
+            <h2 style="color: var(--text-gold); margin-bottom: 15px;">当前轮次状态</h2>
+            <div class="status-display" id="statusDisplay">
+                <div class="status-card">
+                    <span>轮次号</span>
+                    <span class="status-value" id="roundNumber">-</span>
+                </div>
+                <div class="status-card">
+                    <span>剩余时间</span>
+                    <span class="status-value" id="timeRemaining">-</span>
+                </div>
+                <div class="status-card">
+                    <span>投注数量</span>
+                    <span class="status-value" id="betCount">-</span>
+                </div>
+                <div class="status-card">
+                    <span>投注金额</span>
+                    <span class="status-value" id="betAmount">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <h2 style="color: var(--text-gold); margin-bottom: 15px;">手动控制</h2>
+            <div class="control-buttons">
+                <button class="btn btn-primary" onclick="createNewRound()">创建新轮次</button>
+                <button class="btn btn-secondary" onclick="drawCurrentRound()">立即开奖</button>
+                <button class="btn btn-info" onclick="refreshStatus()">刷新状态</button>
+                <button class="btn btn-warning" onclick="autoManageRounds()">自动管理</button>
+            </div>
+            
+            <div class="auto-status">
+                <span>自动管理状态:</span>
+                <div class="status-indicator" id="autoIndicator"></div>
+                <span id="autoStatus">已停止</span>
+                <button class="btn btn-small" onclick="toggleAutoManagement()" id="autoToggle">启动</button>
+            </div>
+        </div>
+        
+        <!-- 操作日志 -->
+        <div class="control-panel">
+            <h2 style="color: var(--text-gold); margin-bottom: 15px;">操作日志</h2>
+            <div class="log-display" id="logDisplay">系统启动...\n</div>
+            <button class="btn btn-small" onclick="clearLog()">清空日志</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script>
+        const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
+        let autoManagementInterval = null
+        
+        // 添加日志
+        function addLog(message) {
+            const logDisplay = document.getElementById('logDisplay')
+            const timestamp = new Date().toLocaleTimeString()
+            logDisplay.textContent += `[${timestamp}] ${message}\n`
+            logDisplay.scrollTop = logDisplay.scrollHeight
+        }
+        
+        // 清空日志
+        function clearLog() {
+            document.getElementById('logDisplay').textContent = ''
+        }
+        
+        // 刷新状态
+        async function refreshStatus() {
+            try {
+                const { data, error } = await supabaseClient.rpc('get_current_round')
+                
+                if (error) throw error
+                
+                if (data.success) {
+                    document.getElementById('roundNumber').textContent = data.round_number
+                    document.getElementById('betCount').textContent = data.total_bets_count
+                    document.getElementById('betAmount').textContent = `${data.total_bet_amount} 元`
+                    
+                    // 更新倒计时
+                    updateCountdown(data.time_remaining_seconds)
+                    
+                    addLog(`状态更新: 轮次 ${data.round_number}, 剩余 ${Math.floor(data.time_remaining_seconds)} 秒`)
+                } else {
+                    document.getElementById('roundNumber').textContent = '无'
+                    document.getElementById('timeRemaining').textContent = '无'
+                    document.getElementById('betCount').textContent = '0'
+                    document.getElementById('betAmount').textContent = '0 元'
+                    addLog('当前没有进行中的轮次')
+                }
+            } catch (error) {
+                addLog(`刷新状态失败: ${error.message}`)
+            }
+        }
+        
+        // 更新倒计时
+        function updateCountdown(seconds) {
+            const minutes = Math.floor(seconds / 60)
+            const remainingSeconds = Math.floor(seconds % 60)
+            document.getElementById('timeRemaining').textContent = 
+                `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+        }
+        
+        // 创建新轮次
+        async function createNewRound() {
+            try {
+                addLog('正在创建新轮次...')
+                const { data, error } = await supabaseClient.rpc('create_new_round')
+                
+                if (error) throw error
+                
+                if (data.success) {
+                    addLog(`✅ 新轮次创建成功: ${data.round_number}`)
+                    refreshStatus()
+                } else {
+                    addLog(`❌ 创建轮次失败: ${data.message}`)
+                }
+            } catch (error) {
+                addLog(`❌ 创建轮次错误: ${error.message}`)
+            }
+        }
+        
+        // 立即开奖
+        async function drawCurrentRound() {
+            try {
+                addLog('正在执行开奖...')
+                const { data, error } = await supabaseClient.rpc('draw_current_round')
+                
+                if (error) throw error
+                
+                if (data.success) {
+                    addLog(`🎉 开奖完成: 轮次 ${data.round_number}`)
+                    addLog(`中奖号码: ${data.winning_numbers.join(', ')}`)
+                    addLog(`中奖人数: ${data.total_winners}, 总派奖: ${data.total_payout} 元`)
+                    refreshStatus()
+                } else {
+                    addLog(`❌ 开奖失败: ${data.message}`)
+                }
+            } catch (error) {
+                addLog(`❌ 开奖错误: ${error.message}`)
+            }
+        }
+        
+        // 自动管理轮次
+        async function autoManageRounds() {
+            try {
+                const { data, error } = await supabaseClient.rpc('auto_manage_rounds')
+                
+                if (error) throw error
+                
+                if (data.success) {
+                    if (data.actions && data.actions.length > 0) {
+                        data.actions.forEach(action => {
+                            if (action.draw) {
+                                addLog(`🎉 自动开奖: 轮次 ${action.draw.round_number}`)
+                            }
+                            if (action.create) {
+                                addLog(`✅ 自动创建: 轮次 ${action.create.round_number}`)
+                            }
+                        })
+                    } else {
+                        addLog('✓ 轮次状态正常')
+                    }
+                    refreshStatus()
+                } else {
+                    addLog(`❌ 自动管理失败: ${data.message}`)
+                }
+            } catch (error) {
+                addLog(`❌ 自动管理错误: ${error.message}`)
+            }
+        }
+        
+        // 切换自动管理
+        function toggleAutoManagement() {
+            const indicator = document.getElementById('autoIndicator')
+            const status = document.getElementById('autoStatus')
+            const toggle = document.getElementById('autoToggle')
+            
+            if (autoManagementInterval) {
+                // 停止自动管理
+                clearInterval(autoManagementInterval)
+                autoManagementInterval = null
+                indicator.classList.remove('active')
+                status.textContent = '已停止'
+                toggle.textContent = '启动'
+                addLog('🛑 自动管理已停止')
+            } else {
+                // 启动自动管理
+                autoManagementInterval = setInterval(() => {
+                    autoManageRounds()
+                }, 30000) // 每30秒检查一次
+                
+                indicator.classList.add('active')
+                status.textContent = '运行中'
+                toggle.textContent = '停止'
+                addLog('🚀 自动管理已启动 (每30秒检查一次)')
+                
+                // 立即执行一次
+                autoManageRounds()
+            }
+        }
+        
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            addLog('轮次管理系统已启动')
+            refreshStatus()
+            
+            // 每5秒更新一次状态
+            setInterval(refreshStatus, 5000)
+        })
+    </script>
+</body>
+</html>

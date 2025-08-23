@@ -42,6 +42,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         singleBetAmountInput.addEventListener('input', updateBetSummary)
     }
 
+    // 快捷菜单事件
+    const quickMenuToggle = document.getElementById('quickMenuToggle')
+    const quickMenuDropdown = document.getElementById('quickMenuDropdown')
+    if (quickMenuToggle && quickMenuDropdown) {
+        quickMenuToggle.addEventListener('click', (e) => {
+            e.stopPropagation()
+            quickMenuDropdown.classList.toggle('show')
+        })
+
+        // 点击其他地方关闭菜单
+        document.addEventListener('click', (e) => {
+            if (!quickMenuToggle.contains(e.target) && !quickMenuDropdown.contains(e.target)) {
+                quickMenuDropdown.classList.remove('show')
+            }
+        })
+    }
+
     // 监听认证状态变化
     supabaseClient.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_OUT') {
@@ -314,6 +331,7 @@ function updateBetSummary() {
     const selectedCountEl = document.getElementById('selectedCount')
     const singleBetAmountEl = document.getElementById('singleBetAmount')
     const totalAmountEl = document.getElementById('totalAmount')
+    const potentialPayoutEl = document.getElementById('potentialPayout')
 
     if (selectedCountEl) {
         selectedCountEl.textContent = selectedNumbers.length
@@ -323,6 +341,20 @@ function updateBetSummary() {
         const singleAmount = parseFloat(singleBetAmountEl.value) || 2
         const totalAmount = selectedNumbers.length * singleAmount
         totalAmountEl.textContent = `${totalAmount} 元`
+
+        // 计算潜在赔付 (每组最多中一注，单注金额 × 9.8倍赔率)
+        if (potentialPayoutEl) {
+            // 计算有多少个不同的组
+            const groupsUsed = new Set()
+            selectedNumbers.forEach(selection => {
+                const [group] = selection.split('-')
+                groupsUsed.add(group)
+            })
+
+            // 潜在赔付 = 组数 × 单注金额 × 9.8倍
+            const potentialPayout = groupsUsed.size * singleAmount * 9.8
+            potentialPayoutEl.textContent = `${potentialPayout.toFixed(1)} 元`
+        }
     }
 }
 
@@ -344,6 +376,14 @@ async function placeBet() {
 
     const singleAmount = parseFloat(singleBetAmountEl.value)
     const totalAmount = selectedNumbers.length * singleAmount
+
+    // 计算潜在赔付：每组最多中一注
+    const groupsUsed = new Set()
+    selectedNumbers.forEach(selection => {
+        const [group] = selection.split('-')
+        groupsUsed.add(group)
+    })
+    const potentialPayout = groupsUsed.size * singleAmount * 9.8
 
     // 验证输入
     if (!singleAmount || singleAmount < 1) {
@@ -378,6 +418,7 @@ async function placeBet() {
             body: {
                 bets: betData,
                 totalAmount: totalAmount,
+                potentialPayout: potentialPayout,
                 userId: currentUser.id
             }
         })
@@ -537,7 +578,7 @@ async function updateBalance() {
 async function loadHistory() {
     try {
         const { data, error } = await supabaseClient.functions.invoke('get-history', {
-            body: { type: 'rounds', limit: 10 }
+            body: { type: 'rounds', limit: 1 }
         })
 
         if (error) throw error

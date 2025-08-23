@@ -18,6 +18,8 @@
   --text-gold: #ffd700;
   --text-muted: #cccccc;
   --text-dark: #333333;
+
+  --success-green: #4caf50;
   
   --border-gold: #d4af37;
   --border-dark: #444444;
@@ -30,7 +32,7 @@
   --font-body: 'Crimson Text', serif;
   
   /* 间距 */
-  --spacing-xs: 0.25rem;
+  --spacing-xs: 0.15rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
@@ -191,6 +193,96 @@ body {
   gap: var(--spacing-lg);
 }
 
+/* 快捷菜单样式 */
+.quick-menu {
+  position: relative;
+}
+
+.btn-icon-only {
+  background: transparent;
+  border: 2px solid var(--border-gold);
+  color: var(--primary-gold);
+  padding: var(--spacing-sm);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-normal);
+  cursor: pointer;
+}
+
+.btn-icon-only:hover {
+  background: var(--primary-gold);
+  color: var(--bg-dark);
+  box-shadow: var(--shadow-gold);
+  transform: scale(1.1);
+}
+
+.menu-icon {
+  font-size: 18px;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.quick-menu-dropdown {
+  position: absolute;
+  top: calc(100% + var(--spacing-sm));
+  right: 0;
+  background: var(--bg-wood);
+  border: 2px solid var(--border-gold);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-dark);
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all var(--transition-normal);
+  z-index: 1000;
+}
+
+.quick-menu-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.quick-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.quick-menu-item:last-child {
+  border-bottom: none;
+}
+
+.quick-menu-item:hover {
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--primary-gold);
+}
+
+.menu-item-icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.menu-item-text {
+  font-family: var(--font-title);
+  font-weight: 600;
+}
+
 .balance-display {
   background: rgba(0, 0, 0, 0.3);
   padding: var(--spacing-sm) var(--spacing-md);
@@ -255,18 +347,19 @@ body {
 }
 
 .round-number {
-  text-align: center;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--spacing-sm);
 }
 
 .round-label {
-  display: block;
   font-size: 0.9rem;
   color: var(--text-muted);
-  margin-bottom: var(--spacing-xs);
+  flex-shrink: 0;
 }
 
 .round-value {
-  display: block;
   font-family: var(--font-title);
   font-size: 1.8rem;
   color: var(--text-gold);
@@ -282,18 +375,19 @@ body {
 }
 
 .countdown-display {
-  text-align: center;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--spacing-sm);
 }
 
 .countdown-label {
-  display: block;
   font-size: 0.9rem;
   color: var(--text-muted);
-  margin-bottom: var(--spacing-xs);
+  flex-shrink: 0;
 }
 
 .countdown-timer {
-  display: block;
   font-family: var(--font-title);
   font-size: 2rem;
   color: var(--primary-gold);
@@ -356,8 +450,10 @@ body {
   padding-bottom: var(--spacing-xs);
   border-bottom: 1px solid var(--border-dark);
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
 }
 
 .group-name {
@@ -365,15 +461,16 @@ body {
   font-size: 1rem;
   color: var(--text-gold);
   font-weight: 600;
+  flex-shrink: 0;
+  text-align: left;
 }
 
 /* 快速选择按钮 */
 .quick-select {
   display: flex !important;
-  justify-content: center;
-  gap: 3px;
+  justify-content: flex-end;
   flex-wrap: nowrap;
-  margin-top: 5px;
+  margin-top: 0;
   visibility: visible !important;
 }
 
@@ -423,6 +520,7 @@ body {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--spacing-xs);
+  justify-items: end; /* 每个单元格内容靠右 */
 }
 
 /* 数字圆圈样式 */
@@ -568,6 +666,24 @@ body {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+}
+
+/* 潜在赔付特殊样式 */
+.potential-payout {
+  color: var(--success-green);
+  text-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    text-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 0 12px rgba(76, 175, 80, 0.5);
+    transform: scale(1.02);
+  }
 }
 
 .bet-input-small {
@@ -761,6 +877,44 @@ body {
 
 .btn-icon {
   font-size: 1.2em;
+}
+
+/* 更多按钮样式 */
+.btn-more {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: var(--spacing-xs);
+  margin-left: var(--spacing-sm);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.btn-more:hover {
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--primary-gold);
+  transform: scale(1.1);
+}
+
+.more-dots {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+/* 侧边栏标题样式优化 */
+.sidebar-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
 }
 
 /* 侧边栏样式 */
@@ -1068,6 +1222,25 @@ body {
     text-align: center;
   }
 
+  /* 快捷菜单移动端优化 */
+  .user-info {
+    gap: var(--spacing-md);
+  }
+
+  .quick-menu-dropdown {
+    right: -10px;
+    min-width: 160px;
+  }
+
+  .btn-icon-only {
+    width: 36px;
+    height: 36px;
+  }
+
+  .menu-icon {
+    font-size: 16px;
+  }
+
   .game-info-header {
     flex-direction: column;
     gap: var(--spacing-md);
@@ -1122,8 +1295,24 @@ body {
     font-size: 1.4rem;
   }
 
+  .round-number {
+    gap: var(--spacing-xs);
+  }
+
+  .round-label {
+    font-size: 0.8rem;
+  }
+
   .countdown-timer {
     font-size: 1.6rem;
+  }
+
+  .countdown-display {
+    gap: var(--spacing-xs);
+  }
+
+  .countdown-label {
+    font-size: 0.8rem;
   }
 
   .group-numbers {
@@ -1144,6 +1333,14 @@ body {
 
   .quick-select {
     gap: 2px;
+  }
+
+  .group-header {
+    gap: var(--spacing-xs);
+  }
+
+  .group-name {
+    font-size: 0.9rem;
   }
 
   .bet-actions {
@@ -1298,6 +1495,57 @@ body {
   color: var(--text-light);
   font-size: 14px;
   font-weight: bold;
+}
+
+/* 实际赔付高亮样式 */
+.detail-value.payout-highlight {
+  color: var(--primary-gold);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.2));
+  border: 1px solid var(--primary-gold);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+  animation: payout-glow 2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.detail-value.payout-highlight::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes payout-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  50% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
 }
 
 .detail-value.positive {

@@ -281,18 +281,14 @@ class BetDetailPage {
             <div class="detail-section">
                 <h2 class="section-title">
                     <span class="section-icon">🎯</span>
-                    投注内容
+                    投注内容11
                 </h2>
                 <div class="detail-item">
                     <div class="detail-label">选择的数字</div>
                     <div class="detail-value">
                         ${WinningNumbers.renderBetNumbers(bet.selected_numbers, { size: 'medium' })}
                     </div>
-                    <div style="margin-top: 10px; color: rgba(255,255,255,0.7); font-size: 14px;">
-                        ${WinningNumbers.formatBetNumbersText(bet.selected_numbers)}
-                    </div>
                 </div>
-                ${analysis.html}
             </div>
 
             <!-- 开奖结果 -->
@@ -339,7 +335,7 @@ class BetDetailPage {
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">实际赔付</div>
-                        <div class="detail-value">${formatCurrency(bet.actual_payout)}</div>
+                        <div class="detail-value ${bet.actual_payout > 0 ? 'payout-highlight' : ''}">${formatCurrency(bet.actual_payout)}</div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">盈亏</div>

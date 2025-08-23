@@ -14,6 +14,7 @@ interface BetRequest {
     amount: number
   }>
   totalAmount: number
+  potentialPayout: number
   userId: string
 }
 
@@ -39,8 +40,8 @@ serve(async (req) => {
     const requestBody = await req.json()
     console.log('收到的请求数据:', JSON.stringify(requestBody, null, 2))
 
-    const { bets, totalAmount, userId }: BetRequest = requestBody
-    console.log('解析后的数据:', { bets, totalAmount, userId })
+    const { bets, totalAmount, potentialPayout, userId }: BetRequest = requestBody
+    console.log('解析后的数据:', { bets, totalAmount, potentialPayout, userId })
 
     // 验证输入参数
     if (!bets || !Array.isArray(bets) || bets.length === 0) {
@@ -138,7 +139,7 @@ serve(async (req) => {
       round_id: currentRound.id,
       selected_numbers: groupedBets,
       bet_amount: totalAmount,
-      potential_payout: totalAmount * winningMultiplier,
+      potential_payout: potentialPayout || (totalAmount * winningMultiplier),
       status: 'pending',
       metadata: {
         original_bets: originalBets,

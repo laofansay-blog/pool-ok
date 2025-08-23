@@ -37,6 +37,32 @@
                         <span class="balance-amount" id="balance">0.00</span>
                         <span class="balance-currency">G</span>
                     </div>
+
+                    <!-- 快捷菜单 -->
+                    <div class="quick-menu">
+                        <button class="btn btn-icon-only" id="quickMenuToggle" title="快捷菜单">
+                            <span class="menu-icon">⚡</span>
+                        </button>
+                        <div class="quick-menu-dropdown" id="quickMenuDropdown">
+                            <div class="quick-menu-item" onclick="showRechargeModal()">
+                                <span class="menu-item-icon">💰</span>
+                                <span class="menu-item-text">充值</span>
+                            </div>
+                            <div class="quick-menu-item" onclick="showProfileModal()">
+                                <span class="menu-item-icon">👤</span>
+                                <span class="menu-item-text">个人中心</span>
+                            </div>
+                            <div class="quick-menu-item" onclick="showHistoryModal()">
+                                <span class="menu-item-icon">📊</span>
+                                <span class="menu-item-text">开奖历史</span>
+                            </div>
+                            <div class="quick-menu-item" onclick="showRulesModal()">
+                                <span class="menu-item-icon">📜</span>
+                                <span class="menu-item-text">游戏规则</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <button class="btn btn-secondary" id="logout">退出</button>
                 </div>
             </div>
@@ -50,13 +76,13 @@
                 <div class="game-info-header">
                     <div class="round-info">
                         <div class="round-number">
-                            <span class="round-label">期数</span>
+                            <span class="round-label">期数:</span>
                             <span class="round-value" id="roundNumber">20241201001</span>
                         </div>
                     </div>
                     <div class="countdown-info">
                         <div class="countdown-display">
-                            <span class="countdown-label">本期开奖倒计时</span>
+                            <span class="countdown-label">倒计时:</span>
                             <span class="countdown-timer" id="timer">05:00</span>
                         </div>
                     </div>
@@ -90,6 +116,10 @@
                                 <span class="stat-label">总金额:</span>
                                 <span class="stat-value" id="totalAmount">0 元</span>
                             </div>
+                            <div class="stat-item">
+                                <span class="stat-label">潜在赔付:</span>
+                                <span class="stat-value potential-payout" id="potentialPayout">0 元</span>
+                            </div>
                         </div>
                         <div class="bet-actions">
                             <button class="btn btn-secondary" id="clearAll">清空选择</button>
@@ -106,31 +136,18 @@
             <aside class="sidebar">
                 <!-- 最新开奖 -->
                 <section class="latest-results">
-                    <h3 class="sidebar-title">最新开奖</h3>
+                    <h3 class="sidebar-title">
+                        最新开奖
+                        <button class="btn btn-more" onclick="showHistoryModal()" title="查看更多历史记录">
+                            <span class="more-dots">⋯</span>
+                        </button>
+                    </h3>
                     <div class="results-list" id="historyList">
                         <!-- 历史记录将通过 JavaScript 加载 -->
                     </div>
-                    <button class="btn btn-text" onclick="showHistoryModal()">查看更多</button>
                 </section>
 
-                <!-- 快捷操作 -->
-                <section class="quick-actions">
-                    <h3 class="sidebar-title">快捷操作</h3>
-                    <div class="action-buttons">
-                        <button class="btn btn-outline" onclick="showRechargeModal()">
-                            <span class="btn-icon">💰</span>
-                            <span class="btn-text">充值</span>
-                        </button>
-                        <button class="btn btn-outline" onclick="showProfileModal()">
-                            <span class="btn-icon">👤</span>
-                            <span class="btn-text">个人中心</span>
-                        </button>
-                        <button class="btn btn-outline" onclick="showRulesModal()">
-                            <span class="btn-icon">📜</span>
-                            <span class="btn-text">游戏规则</span>
-                        </button>
-                    </div>
-                </section>
+
             </aside>
         </main>
     </div>

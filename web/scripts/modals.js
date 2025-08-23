@@ -700,47 +700,19 @@ function renderBetDetailInModal(bet) {
                 <h4 class="section-title">
                     <span class="section-icon">🎯</span>
                     投注内容
+                     <div class="draw-time">
+                        开奖时间: ${formatTime(round.draw_time)}
+                    </div>
                 </h4>
                 <div class="bet-numbers-display">
                     ${WinningNumbers.renderBetNumbers(bet.selected_numbers, { size: 'medium' }, round?.winning_numbers)}
                 </div>
-                <div class="bet-description">
-                    ${WinningNumbers.formatBetNumbersText(bet.selected_numbers)}
-                </div>
-                ${renderWinningStats(bet.selected_numbers, round?.winning_numbers)}
-                ${bet.metadata ? renderBetAnalysis(bet.metadata) : ''}
-            </div>
-
-            <!-- 开奖结果 -->
-            ${round?.winning_numbers && round.winning_numbers.length > 0 ? `
-                <div class="detail-section">
-                    <h4 class="section-title">
-                        <span class="section-icon">🎲</span>
-                        开奖结果
-                    </h4>
+                ${round?.winning_numbers && round.winning_numbers.length > 0 ? `
                     <div class="winning-numbers-display">
                         ${WinningNumbers.renderDetailed(round.winning_numbers)}
                     </div>
-                    <div class="draw-time">
-                        开奖时间: ${formatTime(round.draw_time)}
-                    </div>
-                </div>
             ` : ''}
-
-            <!-- 实际赔付醒目展示 -->
-            ${(bet.actual_payout > 0 || isActualWinner) ? `
-                <div class="payout-highlight">
-                    <div class="payout-highlight-title">
-                        🎉 实际赔付
-                    </div>
-                    <div class="payout-highlight-amount">
-                        ${formatCurrency(bet.actual_payout)}
-                    </div>
-                    <div class="payout-highlight-subtitle">
-                        投注 ${formatCurrency(bet.bet_amount)} → 获得 ${formatCurrency(bet.actual_payout)} (${(bet.actual_payout / bet.bet_amount).toFixed(1)}倍)
-                    </div>
-                </div>
-            ` : ''}
+            </div>
 
             <!-- 财务信息 -->
             <div class="detail-section">

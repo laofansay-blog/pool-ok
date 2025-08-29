@@ -43,8 +43,7 @@ export default function ProfileScreen() {
 					setUser({
 						id: profile.id,
 						email: authUser.email || '',
-						username:
-							profile.username || authUser.user_metadata?.username || '用户',
+						username: profile.username || authUser.user_metadata?.username || '用户',
 						balance: profile.balance || 0,
 						created_at: profile.created_at
 					})
@@ -140,9 +139,7 @@ export default function ProfileScreen() {
 						{/* 余额卡片 */}
 						<View style={styles.balanceCard}>
 							<Text style={styles.balanceLabel}>账户余额</Text>
-							<Text style={styles.balanceAmount}>
-								¥{user.balance.toFixed(2)}
-							</Text>
+							<Text style={styles.balanceAmount}>¥{user.balance.toFixed(2)}</Text>
 							<Pressable style={styles.rechargeButton}>
 								<Text style={styles.rechargeButtonText}>充值</Text>
 							</Pressable>
@@ -150,48 +147,15 @@ export default function ProfileScreen() {
 
 						{/* 菜单项 */}
 						<View style={styles.menuSection}>
-							<Pressable
-								style={styles.menuItem}
-								onPress={() => router.push('/history')}
-							>
+							<Pressable style={styles.menuItem} onPress={() => router.push('/history')}>
 								<Ionicons name="time" size={24} color="#d4af37" />
 								<Text style={styles.menuText}>投注历史</Text>
 								<Ionicons name="chevron-forward" size={20} color="#666666" />
 							</Pressable>
 
-							<Pressable
-								style={styles.menuItem}
-								onPress={() => router.push('/stats')}
-							>
-								<Ionicons name="stats-chart" size={24} color="#d4af37" />
-								<Text style={styles.menuText}>统计信息</Text>
-								<Ionicons name="chevron-forward" size={20} color="#666666" />
-							</Pressable>
-
-							<Pressable
-								style={styles.menuItem}
-								onPress={() => router.push('/transactions')}
-							>
-								<Ionicons name="swap-horizontal" size={24} color="#d4af37" />
+							<Pressable style={styles.menuItem}>
+								<Ionicons name="wallet" size={24} color="#d4af37" />
 								<Text style={styles.menuText}>交易记录</Text>
-								<Ionicons name="chevron-forward" size={20} color="#666666" />
-							</Pressable>
-
-							<Pressable
-								style={styles.menuItem}
-								onPress={() => router.push('/recharge-history')}
-							>
-								<Ionicons name="card" size={24} color="#d4af37" />
-								<Text style={styles.menuText}>充值记录</Text>
-								<Ionicons name="chevron-forward" size={20} color="#666666" />
-							</Pressable>
-
-							<Pressable
-								style={styles.menuItem}
-								onPress={() => router.push('/winnings')}
-							>
-								<Ionicons name="trophy" size={24} color="#d4af37" />
-								<Text style={styles.menuText}>中奖明细</Text>
 								<Ionicons name="chevron-forward" size={20} color="#666666" />
 							</Pressable>
 
@@ -218,9 +182,7 @@ export default function ProfileScreen() {
 					<View style={styles.notLoggedIn}>
 						<Ionicons name="person-circle" size={80} color="#666666" />
 						<Text style={styles.notLoggedInText}>您还未登录</Text>
-						<Text style={styles.notLoggedInSubtext}>
-							登录后可查看个人信息和投注记录
-						</Text>
+						<Text style={styles.notLoggedInSubtext}>登录后可查看个人信息和投注记录</Text>
 						<Pressable style={styles.loginButton} onPress={goToLogin}>
 							<Text style={styles.loginButtonText}>立即登录</Text>
 						</Pressable>

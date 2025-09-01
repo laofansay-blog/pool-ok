@@ -1,0 +1,8 @@
+# SPA路由重定向
+/*    /index.html   200
+
+# API代理（如果需要）
+# /api/*  https://your-supabase-url.supabase.co/rest/v1/:splat  200
+
+# 强制HTTPS
+http://rn-lottery.pages.dev/*  https://rn-lottery.pages.dev/:splat  301!

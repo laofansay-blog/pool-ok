@@ -5,6 +5,7 @@ A clean and modern lottery application built with React Native and Expo, integra
 ## ✨ Features
 
 ### 🎯 Core Functionality
+
 - **User Authentication** - Complete login/registration system
 - **Number Selection** - Choose 9 lucky numbers from 1-10
 - **Betting System** - Custom bet amounts with 9.8x payout
@@ -13,6 +14,7 @@ A clean and modern lottery application built with React Native and Expo, integra
 - **Live Updates** - Real-time balance and result synchronization
 
 ### 🎨 Design Features
+
 - **Modern Minimalist** - Clean black and white color scheme
 - **Responsive Design** - Adapts to different screen sizes
 - **Smooth Interactions** - Elegant user experience
@@ -21,12 +23,14 @@ A clean and modern lottery application built with React Native and Expo, integra
 ## 🛠 Tech Stack
 
 ### Frontend
+
 - **React Native** - Cross-platform mobile framework
 - **Expo** - Development toolchain and runtime
 - **TypeScript** - Type-safe JavaScript
 - **Recoil** - State management library
 
 ### Backend
+
 - **Supabase** - Backend-as-a-Service platform
 - **PostgreSQL** - Database
 - **Edge Functions** - Server-side logic
@@ -35,6 +39,7 @@ A clean and modern lottery application built with React Native and Expo, integra
 ## 🚀 Quick Start
 
 ### Requirements
+
 - Node.js 20.15.1+
 - npm or yarn
 - Expo CLI
@@ -43,11 +48,13 @@ A clean and modern lottery application built with React Native and Expo, integra
 ### Installation
 
 1. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 2. **Start development server**
+
 ```bash
 npm start
 # or
@@ -113,7 +120,39 @@ rn-lottery/
 - **Winning Condition**: All 9 selected numbers match the drawn numbers
 - **Payout Ratio**: 9.8x bet amount
 
-## � Deployment
+## 🌐 Web Deployment (Cloudflare Pages)
+
+### Quick Deploy to Cloudflare Pages
+
+1. **Push to Git**: Ensure your code is pushed to GitHub/GitLab
+2. **Login to Cloudflare**: Visit [dash.cloudflare.com](https://dash.cloudflare.com)
+3. **Create Pages Project**: Connect your Git repository
+4. **Configure Build**:
+   - Build command: `npm run build:cloudflare`
+   - Output directory: `dist`
+   - Environment variables: Add your Supabase credentials
+
+### Build Commands
+
+```bash
+# Build for Cloudflare Pages
+npm run build:cloudflare
+
+# Test build locally
+npm run build:web-prod
+```
+
+### Features
+
+- **Global CDN** - 200+ edge locations worldwide
+- **Auto HTTPS** - Free SSL certificates
+- **SPA Routing** - Single Page Application support
+- **Performance** - Optimized caching and compression
+- **Security** - Built-in DDoS protection
+
+📖 **Detailed Guide**: See [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md) for complete instructions
+
+## 📱 Mobile Deployment (EAS)
 
 ### Prerequisites
 
@@ -213,22 +252,22 @@ Create environment-specific configurations in `eas.json`:
 
 ```json
 {
-  "build": {
-    "preview": {
-      "distribution": "internal",
-      "env": {
-        "EXPO_PUBLIC_SUPABASE_URL": "your-preview-supabase-url",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "your-preview-anon-key"
-      }
-    },
-    "production": {
-      "autoIncrement": true,
-      "env": {
-        "EXPO_PUBLIC_SUPABASE_URL": "your-production-supabase-url",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "your-production-anon-key"
-      }
-    }
-  }
+	"build": {
+		"preview": {
+			"distribution": "internal",
+			"env": {
+				"EXPO_PUBLIC_SUPABASE_URL": "your-preview-supabase-url",
+				"EXPO_PUBLIC_SUPABASE_ANON_KEY": "your-preview-anon-key"
+			}
+		},
+		"production": {
+			"autoIncrement": true,
+			"env": {
+				"EXPO_PUBLIC_SUPABASE_URL": "your-production-supabase-url",
+				"EXPO_PUBLIC_SUPABASE_ANON_KEY": "your-production-anon-key"
+			}
+		}
+	}
 }
 ```
 
@@ -267,30 +306,33 @@ eas update --branch preview --message "Testing new features"
 
 ```json
 {
-  "expo": {
-    "version": "1.0.1",
-    "android": {
-      "versionCode": 2
-    },
-    "ios": {
-      "buildNumber": "2"
-    }
-  }
+	"expo": {
+		"version": "1.0.1",
+		"android": {
+			"versionCode": 2
+		},
+		"ios": {
+			"buildNumber": "2"
+		}
+	}
 }
 ```
 
 ### Release Process
 
 1. **Development**
+
    - Make changes and test locally
    - Commit changes to version control
 
 2. **Preview Testing**
+
    - Build preview version: `eas build --profile preview`
    - Test with internal team
    - Fix any issues found
 
 3. **Production Release**
+
    - Update version numbers in `app.json`
    - Build production version: `eas build --profile production`
    - Submit to app stores: `eas submit`

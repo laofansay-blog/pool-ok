@@ -13,15 +13,31 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.laofansay.rnlottery",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#000000"
-      }
+      },
+      "package": "com.laofansay.rnlottery"
     },
     "web": {
       "bundler": "metro"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3ca21839-5729-433c-a7be-f15185a1dc89"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3ca21839-5729-433c-a7be-f15185a1dc89"
     }
   }
 }

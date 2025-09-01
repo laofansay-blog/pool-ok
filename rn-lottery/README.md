@@ -58,6 +58,31 @@ npx expo start
    - Use Expo Go app to scan QR code and run on device
    - Press `i` to run on iOS Simulator
    - Press `a` to run on Android Emulator
+   - Press `w` to run on Web browser
+
+### 🌐 Web Access
+
+The application supports web browsers and can be accessed at:
+
+**Local Development**: `http://localhost:19006`
+
+**Web Features**:
+
+- Responsive design for desktop and mobile browsers
+- Touch and mouse input support
+- Real-time hot reloading
+- Browser developer tools integration
+- Progressive Web App (PWA) capabilities
+
+**Web Commands**:
+
+```bash
+# Start web development server
+npm run web
+
+# Or use Expo CLI directly
+expo start --web
+```
 
 ## 📁 Project Structure
 
@@ -88,6 +113,215 @@ rn-lottery/
 - **Winning Condition**: All 9 selected numbers match the drawn numbers
 - **Payout Ratio**: 9.8x bet amount
 
-## 📄 License
+## � Deployment
+
+### Prerequisites
+
+Before deploying, ensure you have:
+
+- **Expo Account** - Sign up at [expo.dev](https://expo.dev)
+- **EAS CLI** - Expo Application Services command line tool
+- **Git Repository** - Code should be committed to version control
+
+### EAS Setup
+
+1. **Install EAS CLI**
+
+```bash
+npm install -g eas-cli
+```
+
+2. **Login to Expo**
+
+```bash
+eas login
+```
+
+3. **Configure EAS Build**
+
+```bash
+eas build:configure
+```
+
+This will create an `eas.json` configuration file with build profiles:
+
+- **development** - Development builds with debugging tools
+- **preview** - Internal testing builds
+- **production** - App store ready builds
+
+### Building the App
+
+#### Preview Build (Internal Testing)
+
+```bash
+# Android APK
+eas build --platform android --profile preview
+
+# iOS IPA (requires Apple Developer account)
+eas build --platform ios --profile preview
+
+# Both platforms
+eas build --profile preview
+```
+
+#### Production Build (App Store)
+
+```bash
+# Android AAB for Google Play
+eas build --platform android --profile production
+
+# iOS for App Store
+eas build --platform ios --profile production
+
+# Both platforms
+eas build --profile production
+```
+
+### Monitoring Builds
+
+- **Check build status**
+
+```bash
+eas build:list
+```
+
+- **View build details**
+
+```bash
+eas build:view [BUILD_ID]
+```
+
+- **Build logs** are available at: `https://expo.dev/accounts/[USERNAME]/projects/[PROJECT]/builds/[BUILD_ID]`
+
+### App Store Submission
+
+#### Google Play Store
+
+```bash
+eas submit --platform android
+```
+
+#### Apple App Store
+
+```bash
+eas submit --platform ios
+```
+
+### Environment Configuration
+
+Create environment-specific configurations in `eas.json`:
+
+```json
+{
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "your-preview-supabase-url",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "your-preview-anon-key"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "your-production-supabase-url",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "your-production-anon-key"
+      }
+    }
+  }
+}
+```
+
+## 🔄 Updates & Maintenance
+
+### Over-the-Air (OTA) Updates
+
+For JavaScript-only changes (no native code changes):
+
+1. **Publish update**
+
+```bash
+eas update --branch production --message "Bug fixes and improvements"
+
+eas update:configure
+
+eas update --branch production --message '0.0.1'
+
+```
+
+2. **Preview update**
+
+```bash
+eas update --branch preview --message "Testing new features"
+```
+
+### Version Management
+
+#### Semantic Versioning
+
+- **Patch** (1.0.1) - Bug fixes, minor changes
+- **Minor** (1.1.0) - New features, backward compatible
+- **Major** (2.0.0) - Breaking changes
+
+#### Update app.json version
+
+```json
+{
+  "expo": {
+    "version": "1.0.1",
+    "android": {
+      "versionCode": 2
+    },
+    "ios": {
+      "buildNumber": "2"
+    }
+  }
+}
+```
+
+### Release Process
+
+1. **Development**
+   - Make changes and test locally
+   - Commit changes to version control
+
+2. **Preview Testing**
+   - Build preview version: `eas build --profile preview`
+   - Test with internal team
+   - Fix any issues found
+
+3. **Production Release**
+   - Update version numbers in `app.json`
+   - Build production version: `eas build --profile production`
+   - Submit to app stores: `eas submit`
+
+4. **Post-Release**
+   - Monitor crash reports and user feedback
+   - Use OTA updates for quick fixes
+   - Plan next release cycle
+
+### Rollback Strategy
+
+If issues are found after release:
+
+**OTA Rollback** (for JS-only issues)
+
+```bash
+eas update --branch production --message "Rollback to previous version"
+```
+
+**Binary Rollback** (for native issues)
+
+- Revert to previous working commit
+- Build and submit new version to app stores
+
+### Monitoring & Analytics
+
+- **Expo Analytics** - Built-in usage analytics
+- **Crash Reporting** - Automatic crash detection
+- **Performance Monitoring** - App performance metrics
+- **User Feedback** - App store reviews and ratings
+
+## �📄 License
 
 This project is for educational and entertainment purposes only. Play responsibly.

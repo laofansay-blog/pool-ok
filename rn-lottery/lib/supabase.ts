@@ -1,12 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 import Constants from 'expo-constants'
+import { Platform } from 'react-native'
 
 // Supabase 配置
 const supabaseUrl =
-	process.env.NEXT_PUBLIC_SUPABASE_URL ||
+	process.env.EXPO_PUBLIC_SUPABASE_URL ||
 	'https://deyugfnymgyxcfacxtjy.supabase.co'
 const supabaseAnonKey =
-	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+	process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ||
 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRleXVnZm55bWd5eGNmYWN4dGp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQxMzY1OTcsImV4cCI6MjA2OTcxMjU5N30.9-hEjAjJEU3RP-Jbv2MeLv-56MXmXEdZDTNYhfqVX1g'
 
 // 创建 Supabase 客户端
@@ -14,7 +15,21 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 	auth: {
 		autoRefreshToken: true,
 		persistSession: true,
-		detectSessionInUrl: false
+		detectSessionInUrl: false,
+		// iOS特定配置
+		...(Platform.OS === 'ios' && {
+			flowType: 'pkce',
+			debug: __DEV__
+		})
+	},
+	// 全局配置
+	global: {
+		headers: {
+			'User-Agent': `RNLottery/1.0.0 ${Platform.OS}`,
+			...(Platform.OS === 'ios' && {
+				'X-iOS-Bundle-Identifier': 'com.laofansay.rnlottery'
+			})
+		}
 	}
 })
 

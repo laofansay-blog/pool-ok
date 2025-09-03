@@ -7,9 +7,11 @@ import {
 	StyleSheet,
 	TextInput,
 	Modal,
-	Alert
+	Alert,
+	Platform
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import IOSDebugInfo from '@/components/IOSDebugInfo'
 import {
 	placeBet,
 	testEdgeFunction,
@@ -562,6 +564,9 @@ export default function HomeScreen() {
 
 	return (
 		<SafeAreaView style={styles.container}>
+			{/* iOS调试信息 */}
+			{Platform.OS === 'ios' && __DEV__ && <IOSDebugInfo />}
+
 			{/* Header */}
 			<View style={styles.header}>
 				<Pressable style={styles.backButton}>

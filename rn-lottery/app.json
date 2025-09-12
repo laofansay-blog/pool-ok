@@ -5,6 +5,7 @@
 		"version": "1.0.1",
 		"orientation": "portrait",
 		"userInterfaceStyle": "dark",
+		"scheme": "rnlottery",
 		"splash": {
 			"resizeMode": "contain",
 			"backgroundColor": "#000000"
@@ -28,6 +29,7 @@
 			"output": "single"
 		},
 		"extra": {
+			"router": {},
 			"eas": {
 				"projectId": "95d56e20-b5cc-4ec8-87af-fc6d11fc7936"
 			}

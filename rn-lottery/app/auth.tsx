@@ -16,9 +16,9 @@ import { authAPI } from '../lib/api'
 
 export default function AuthScreen() {
 	const [isLogin, setIsLogin] = useState(true)
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-	const [username, setUsername] = useState('')
+	const [email, setEmail] = useState('dvwhu11323@atminmail.com')
+	const [password, setPassword] = useState('dvwhu11323@')
+	const [username, setUsername] = useState()
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [loading, setLoading] = useState(false)
 

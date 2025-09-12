@@ -41,7 +41,11 @@
     "http-server": "^14.1.1",
     "dotenv": "^16.3.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "expo": "latest",
+    "react": "19.1.0",
+    "react-native": "0.81.4"
+  },
   "engines": {
     "node": ">=16.0.0"
   },

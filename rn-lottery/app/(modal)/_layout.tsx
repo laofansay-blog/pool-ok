@@ -19,28 +19,32 @@ export default function ModalLayout() {
 				name="stats"
 				options={{
 					title: '统计信息',
-					headerBackTitle: '返回'
+					headerBackTitle: '返回',
+					headerShown: true
 				}}
 			/>
 			<Stack.Screen
 				name="transactions"
 				options={{
 					title: '交易记录',
-					headerBackTitle: '返回'
+					headerBackTitle: '返回',
+					headerShown: true
 				}}
 			/>
 			<Stack.Screen
 				name="recharge-history"
 				options={{
 					title: '充值记录',
-					headerBackTitle: '返回'
+					headerBackTitle: '返回',
+					headerShown: true
 				}}
 			/>
 			<Stack.Screen
 				name="winnings"
 				options={{
 					title: '中奖明细',
-					headerBackTitle: '返回'
+					headerBackTitle: '返回',
+					headerShown: true
 				}}
 			/>
 			<Stack.Screen
